@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  nome      String?
+  role      String   @default("ADMIN")
+  active    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Example {
+  id        Int      @id @default(autoincrement())
+  title     String
+  filePath  String?   // caminho do arquivo
+  active    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Motivo {
+  id        Int      @id @default(autoincrement())
+  descricao String
+  status    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+}
+
+model Grupo {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  status    Boolean  @default(true)
+
+  subgrupos Subgrupo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subgrupo {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  status   Boolean @default(true)
+
+  grupoId  Int
+  grupo    Grupo   @relation(fields: [grupoId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([grupoId])
+}
+
+model AtendimentoMobuss {
+  id               String   @id @default(uuid())
+  idMobuss         String   @unique
+  numSolicitacao   String?
+
+  status           String
+
+  payloadEnvio     Json
+  payloadResposta  Json?
+
+  agendamento      AgendamentoMobuss?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model AgendamentoMobuss {
+  id               String   @id @default(uuid())
+  idVisita         String   @unique
+
+  dataInicio       DateTime
+  dataFim          DateTime
+  idColaborador    String
+
+  atendimentoId    String   @unique
+  atendimento      AtendimentoMobuss @relation(fields: [atendimentoId], references: [id])
+
+  payloadEnvio     Json
+  payloadResposta  Json?
+
+  createdAt        DateTime @default(now())
+}
