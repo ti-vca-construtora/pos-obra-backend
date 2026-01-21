@@ -11,6 +11,7 @@ import { CreateAtendimentoDto } from './dto/create-atendimento.dto';
 import { AgendarVisitaDto } from './dto/agendar-visita.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ConsultarLocaisObraDto } from './dto/consultar-locais-obra.dto';
+import { ConsultarClienteDto } from './dto/consultar-cliente.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('integracoes/mobuss')
@@ -46,6 +47,13 @@ consultarObrasEmpresa() {
 consultarLocaisObra(@Body() dto: ConsultarLocaisObraDto) {
   return this.service.consultarLocaisObra(dto.idObra);
 }
+
+@UseGuards(JwtAuthGuard)
+@Post('cliente')
+consultarCliente(@Body() dto: ConsultarClienteDto) {
+  return this.service.consultarCliente(dto.cpfCnpj);
+}
+
 
 
 }

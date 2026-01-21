@@ -17,6 +17,8 @@ export class UsersService {
         email:dto.email,
         nome:dto.nome,
         password:hashedPassword,
+        role: dto.role,
+        active: true,
       },
       select:{
         id:true,
@@ -31,5 +33,8 @@ export class UsersService {
 
   findAll() {
     return this.prisma.user.findMany();
-  }  
+  } 
+
+
+
 }

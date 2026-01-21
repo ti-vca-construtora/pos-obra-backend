@@ -59,7 +59,7 @@ export class AuthService {
         email: dto.email,
         password: hashedPassword,
         nome: dto.nome,
-        role: 'USER',
+        role: 'ADMIN',
         active: true,
       },
     });

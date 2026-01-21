@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-21T13:38:56.882Z",
+  "generatedAt": "2026-01-21T17:52:24.054Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -8541,6 +8541,265 @@
             "content": {
               "application/json": {
                 "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1769016803957_s6mvd9otn",
+      "name": "Consultar cliente",
+      "method": "POST",
+      "path": "/integracoes/mobuss/cliente",
+      "description": "pegar informações do cliente",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "cpfCnpj",
+          "type": "string",
+          "required": true,
+          "example": "06963397560",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "id": "string",
+          "cpfCnpj": "string",
+          "nome": "string",
+          "telefone": "string",
+          "email": "string",
+          "idLegado": "string",
+          "empreendimentos": [
+            {
+              "id": "string",
+              "nome": "string",
+              "idLegado": "string",
+              "locais": [
+                {
+                  "id": "string",
+                  "nome": "string",
+                  "hierarquia": "string",
+                  "ordem": "string",
+                  "idLegado": "string",
+                  "dataHabitese": "2022-03-10T00:00:00.000Z"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-01-21T17:33:23.959Z",
+      "updatedAt": "2026-01-21T17:33:23.961Z",
+      "openapi": {
+        "id": "endpoint_1769016803957_s6mvd9otn",
+        "method": "POST",
+        "path": "/integracoes/mobuss/cliente",
+        "summary": "Consultar cliente",
+        "description": "pegar informações do cliente",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "cpfCnpj"
+            ],
+            "properties": {
+              "cpfCnpj": {
+                "type": "string",
+                "description": "",
+                "example": "06963397560"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "string",
+                  "cpfCnpj": "string",
+                  "nome": "string",
+                  "telefone": "string",
+                  "email": "string",
+                  "idLegado": "string",
+                  "empreendimentos": [
+                    {
+                      "id": "string",
+                      "nome": "string",
+                      "idLegado": "string",
+                      "locais": [
+                        {
+                          "id": "string",
+                          "nome": "string",
+                          "hierarquia": "string",
+                          "ordem": "string",
+                          "idLegado": "string",
+                          "dataHabitese": "2022-03-10T00:00:00.000Z"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1769017939428_mbjl5jcta",
+      "name": "Criar usuários",
+      "method": "POST",
+      "path": "/users",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "example": "admin@admin.com",
+          "description": ""
+        },
+        {
+          "name": "password",
+          "type": "string",
+          "required": true,
+          "example": "123456",
+          "description": ""
+        },
+        {
+          "name": "nome",
+          "type": "string",
+          "required": true,
+          "example": "Nome do usuário",
+          "description": ""
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "required": true,
+          "example": "ADMIN/USER",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "id": 1,
+          "email": "admin2@admin.com",
+          "nome": "Administrador",
+          "role": "ADMIN",
+          "active": true,
+          "createdAt": "2026-01-21T17:51:03.412Z"
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-01-21T17:52:19.428Z",
+      "updatedAt": "2026-01-21T17:52:19.428Z",
+      "openapi": {
+        "id": "endpoint_1769017939428_mbjl5jcta",
+        "method": "POST",
+        "path": "/users",
+        "summary": "Criar usuários",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "email",
+              "password",
+              "nome",
+              "role"
+            ],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "",
+                "example": "admin@admin.com"
+              },
+              "password": {
+                "type": "string",
+                "description": "",
+                "example": "123456"
+              },
+              "nome": {
+                "type": "string",
+                "description": "",
+                "example": "Nome do usuário"
+              },
+              "role": {
+                "type": "string",
+                "description": "",
+                "example": "ADMIN/USER"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "email": "admin2@admin.com",
+                  "nome": "Administrador",
+                  "role": "ADMIN",
+                  "active": true,
+                  "createdAt": "2026-01-21T17:51:03.412Z"
+                }
               }
             }
           }

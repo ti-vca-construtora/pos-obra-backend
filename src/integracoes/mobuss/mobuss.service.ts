@@ -302,6 +302,40 @@ async consultarSituacaoAtendimento(atendimentoId: string) {
   }
 }
 
+async consultarCliente(cpfCnpj: string) {
+  try {
+    const payload = {
+      cpfCnpj,
+    };
+
+    const response = await firstValueFrom(
+      this.http.post(
+        `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/consultarCliente`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      ),
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error('ERRO MOBUSS CONSULTAR CLIENTE >>>', {
+      payload: { cpfCnpj },
+      status: error?.response?.status,
+      data: error?.response?.data,
+    });
+
+    throw new InternalServerErrorException(
+      error?.response?.data || 'Erro ao consultar cliente na Mobuss',
+    );
+  }
+}
+
+
 
 
 }
