@@ -8,6 +8,8 @@ services:
       - "3000:3000"
     env_file:
       - .env.docker
+    environment:
+      - PUBLIC_API_KEY=posobra-public-2026
     depends_on:
       - mysql
     restart: always

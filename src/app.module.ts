@@ -18,6 +18,7 @@ import { MobussModule } from './integracoes/mobuss/mobuss.module';
 import {ScheduleModule} from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
+import { AtendimentosModule } from './atendimentos/atendimentos.module';
 
 @Module({
   imports: [
@@ -25,13 +26,17 @@ import { TasksModule } from './tasks/tasks.module';
     AuthModule, 
     PrismaModule, 
     ExamplesModule, 
-    MotivosModule, GruposModule, SubgruposModule, MobussModule,
+    MotivosModule, 
+    GruposModule, 
+    SubgruposModule, 
+    MobussModule,
     ScheduleModule.forRoot(),
     TasksModule,
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/docs',
-    }),    
+    }),
+    AtendimentosModule,    
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],

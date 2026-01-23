@@ -9,6 +9,8 @@ COPY prisma ./prisma
 # Instala dependências
 RUN npm install
 
+RUN npx prisma generate
+
 # Copia o restante do código
 COPY . .
 

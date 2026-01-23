@@ -69,6 +69,10 @@ model AtendimentoMobuss {
   idMobuss         String   @unique
   numSolicitacao   String?
 
+  cpfCnpjCliente   String
+  nomeSolicitante  String?
+  emailSolicitante String?
+
   status           String
 
   payloadEnvio     Json
@@ -78,6 +82,8 @@ model AtendimentoMobuss {
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@index([cpfCnpjCliente])
 }
 
 model AgendamentoMobuss {

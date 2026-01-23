@@ -12,6 +12,19 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  private gerarToken(payload: any) {
+  if (payload.role === 'ADMIN') {
+    return this.jwtService.sign(payload, { expiresIn: '1d' });
+  }
+
+  if (payload.role === 'PUBLIC') {
+    return this.jwtService.sign(payload); // sem expiração
+  }
+
+  return this.jwtService.sign(payload, { expiresIn: '7d' });
+}
+
+
   async login(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
 
@@ -32,7 +45,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.gerarToken(payload),
       user:{
         id:user.id,
         email:user.email,
@@ -80,6 +93,19 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+
+  generatePublicToken() {
+  const payload = {
+    role: 'PUBLIC',
+    system: 'site-institucional',
+  };
+
+  return {
+    access_token: this.jwtService.sign(payload), // sem expiresIn
+  };
+}
+
 
   //fim da classe
 }

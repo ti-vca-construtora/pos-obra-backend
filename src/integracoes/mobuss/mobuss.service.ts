@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAtendimentoDto } from './dto/create-atendimento.dto';
 import { AgendarVisitaDto } from './dto/agendar-visita.dto';
+import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
 
 @Injectable()
 export class MobussService {
@@ -38,6 +39,11 @@ export class MobussService {
           idMobuss,
           numSolicitacao,
           status: 'AGUARDANDO_AGENDAMENTO',
+
+           cpfCnpjCliente: dto.cpfCnpjCliente,
+           nomeSolicitante: dto.nomeSolicitante,
+           emailSolicitante: dto.emailSolicitante,
+
           payloadEnvio: {...dto},
           payloadResposta: response.data,
         },
@@ -53,7 +59,14 @@ export class MobussService {
       await this.prisma.atendimentoMobuss.create({
         data: {
           idMobuss: `ERRO_${Date.now()}`,
+          numSolicitacao:null,
           status: 'ERRO',
+
+          // 🔑 CAMPOS OBRIGATÓRIOS
+         cpfCnpjCliente: dto.cpfCnpjCliente,
+         nomeSolicitante: dto.nomeSolicitante,
+         emailSolicitante: dto.emailSolicitante,
+
           payloadEnvio: {...dto},
           payloadResposta: error?.response?.data ?? error.message,
         },
@@ -198,69 +211,6 @@ async agendarVisita(atendimentoId: string, dto: AgendarVisitaDto) {
   }
 }
 
-async consultarObrasEmpresa() {
-  try {
-    const response = await firstValueFrom(
-      this.http.post(
-        `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/consultarObrasEmpresa`,
-        {}, // 👈 body vazio
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      ),
-    );
-
-    return response.data;
-  } catch (error: any) {
-    console.error('ERRO MOBUSS CONSULTAR OBRAS >>>', {
-      status: error?.response?.status,
-      data: error?.response?.data,
-    });
-
-    throw new InternalServerErrorException(
-      error?.response?.data || 'Erro ao consultar obras da empresa',
-    );
-  }
-}
-
-async consultarLocaisObra(idObra: string) {
-  try {
-    const payload = {
-      idObra,
-    };
-
-    const response = await firstValueFrom(
-      this.http.post(
-        `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/consultarLocaisObra`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      ),
-    );
-
-    return response.data;
-  } catch (error: any) {
-    console.error('ERRO MOBUSS CONSULTAR LOCAIS OBRA >>>', {
-      payload: { idObra },
-      status: error?.response?.status,
-      data: error?.response?.data,
-    });
-
-    throw new InternalServerErrorException(
-      error?.response?.data || 'Erro ao consultar locais da obra',
-    );
-  }
-}
-
-
-
 async consultarSituacaoAtendimento(atendimentoId: string) {
   const atendimento = await this.prisma.atendimentoMobuss.findUnique({
     where: { id: atendimentoId },
@@ -334,6 +284,38 @@ async consultarCliente(cpfCnpj: string) {
     );
   }
 }
+
+async consultarSolicitacoesCliente(dto: ConsultarSolicitacoesClienteDto) {
+  try {
+    const response = await firstValueFrom(
+      this.http.post(
+        `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/consultarSolicitacoesCliente`,
+        {
+          numCPFCNPJ: dto.numCPFCNPJ,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      ),
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error('ERRO MOBUSS CONSULTAR SOLICITAÇÕES >>>', {
+      payload: dto,
+      status: error?.response?.status,
+      data: error?.response?.data,
+    });
+
+    throw new InternalServerErrorException(
+      error?.response?.data || 'Erro ao consultar solicitações do cliente',
+    );
+  }
+}
+
 
 
 
