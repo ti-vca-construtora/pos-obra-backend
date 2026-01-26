@@ -1,5 +1,5 @@
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -74,15 +74,26 @@ async update(id: number, dto: UpdateUserDto) {
 }
 
 async remove(id: number) {
-  return this.prisma.user.update({
-    where: { id },
-    data: {
-      active: false,
-    },
-  });
+  const user = await this.prisma.user.findUnique({ where: { id } });
+
+  if (!user) {
+    throw new NotFoundException('Usuário não encontrado');
+  }
+
+  if (user.role === 'ADMIN') {
+    const admins = await this.prisma.user.count({
+      where: { role: 'ADMIN', active: true },
+    });
+
+    if (admins <= 1) {
+      throw new BadRequestException(
+        'Não é possível remover o último administrador',
+      );
+    }
+  }
+
+  return this.prisma.user.delete({ where: { id } });
 }
-
-
 
 
 }

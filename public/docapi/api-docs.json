@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-23T14:20:37.471Z",
+  "generatedAt": "2026-01-26T15:27:58.474Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -1122,7 +1122,7 @@
     },
     {
       "id": "endpoint_1769082975565_oxkr1njm5",
-      "name": "desativar usuario",
+      "name": "Remover usuário",
       "method": "DELETE",
       "path": "/users/{id}",
       "description": "",
@@ -1142,14 +1142,7 @@
         "contentType": "application/json",
         "description": "",
         "example": {
-          "id": 2,
-          "email": "teste@teste.com",
-          "password": "$2b$10$/tfmYlYaToMRGoJ2Yp2JQe1fb.R0aPwqUptGXg.80wbCq7BnL4zwG",
-          "nome": "Teste",
-          "role": "USER",
-          "active": false,
-          "createdAt": "2026-01-20T18:18:41.889Z",
-          "updatedAt": "2026-01-22T11:55:41.545Z"
+          "success": "ok"
         }
       },
       "errorResponses": [
@@ -1164,12 +1157,12 @@
         }
       ],
       "createdAt": "2026-01-22T11:56:15.565Z",
-      "updatedAt": "2026-01-22T11:56:15.565Z",
+      "updatedAt": "2026-01-26T15:26:21.817Z",
       "openapi": {
         "id": "endpoint_1769082975565_oxkr1njm5",
         "method": "DELETE",
         "path": "/users/{id}",
-        "summary": "desativar usuario",
+        "summary": "Remover usuário",
         "description": "",
         "request": {
           "headers": [
@@ -1192,14 +1185,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 2,
-                  "email": "teste@teste.com",
-                  "password": "$2b$10$/tfmYlYaToMRGoJ2Yp2JQe1fb.R0aPwqUptGXg.80wbCq7BnL4zwG",
-                  "nome": "Teste",
-                  "role": "USER",
-                  "active": false,
-                  "createdAt": "2026-01-20T18:18:41.889Z",
-                  "updatedAt": "2026-01-22T11:55:41.545Z"
+                  "success": "ok"
                 }
               }
             }
@@ -2114,7 +2100,7 @@
       "category": "General",
       "headers": [
         {
-          "name": "/auth/public-token",
+          "name": "x-api-key",
           "value": "posobra-public-2026",
           "required": true,
           "description": ""
@@ -2142,7 +2128,7 @@
         }
       ],
       "createdAt": "2026-01-23T13:42:24.963Z",
-      "updatedAt": "2026-01-23T13:42:24.964Z",
+      "updatedAt": "2026-01-26T15:18:28.816Z",
       "openapi": {
         "id": "endpoint_1769175744962_qnip9zmly",
         "method": "POST",
@@ -2152,7 +2138,7 @@
         "request": {
           "headers": [
             {
-              "name": "/auth/public-token",
+              "name": "x-api-key",
               "value": "posobra-public-2026",
               "required": true,
               "description": ""
@@ -2193,7 +2179,15 @@
           "description": ""
         }
       ],
-      "queryParams": [],
+      "queryParams": [
+        {
+          "name": "/{id}",
+          "type": "string",
+          "required": false,
+          "example": "",
+          "description": "para buscar um atendimento especifico"
+        }
+      ],
       "bodyParams": [],
       "response": {
         "code": 200,
@@ -2258,7 +2252,7 @@
         }
       ],
       "createdAt": "2026-01-23T14:12:19.807Z",
-      "updatedAt": "2026-01-23T14:12:19.807Z",
+      "updatedAt": "2026-01-26T15:19:41.297Z",
       "openapi": {
         "id": "endpoint_1769177539805_fc3zxqxdr",
         "method": "GET",
@@ -2274,7 +2268,15 @@
               "description": ""
             }
           ],
-          "query": [],
+          "query": [
+            {
+              "name": "/{id}",
+              "type": "string",
+              "required": false,
+              "example": "",
+              "description": "para buscar um atendimento especifico"
+            }
+          ],
           "body": {
             "type": "object",
             "properties": {}
