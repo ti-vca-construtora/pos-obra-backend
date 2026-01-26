@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAtendimentoDto } from './dto/create-atendimento.dto';
@@ -285,6 +285,7 @@ async consultarCliente(cpfCnpj: string) {
   }
 }
 
+
 async consultarSolicitacoesCliente(dto: ConsultarSolicitacoesClienteDto) {
   try {
     const response = await firstValueFrom(
@@ -317,7 +318,47 @@ async consultarSolicitacoesCliente(dto: ConsultarSolicitacoesClienteDto) {
 }
 
 
+async anexarArquivo(
+  atendimentoId: string,
+  file: Express.Multer.File,
+) {
+  if (!file) {
+    throw new BadRequestException('Arquivo não enviado');
+  }
 
+  const atendimento = await this.prisma.atendimentoMobuss.findUnique({
+    where: { id: atendimentoId },
+  });
+
+  if (!atendimento) {
+    throw new NotFoundException('Atendimento não encontrado');
+  }
+
+  const payload = {
+    idSolicitacao: atendimento.idMobuss,
+    nomeArquivo: file.originalname,
+    arquivoBase64: file.buffer.toString('base64'),
+  };
+
+  const response = await firstValueFrom(
+    this.http.post(
+      `${this.baseUrl}/ccapi/assistencia/anexo/v1/incluir`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    ),
+  );
+
+  return {
+    success: true,
+    atendimentoId: atendimento.id,
+    mobuss: response.data,
+  };
+}
 
 
 }

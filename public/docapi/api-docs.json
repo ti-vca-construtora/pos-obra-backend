@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-26T15:27:58.474Z",
+  "generatedAt": "2026-01-26T19:47:01.342Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -775,6 +775,13 @@
           "required": true,
           "example": "ADMIN/USER",
           "description": ""
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": true,
+          "example": "true/false",
+          "description": ""
         }
       ],
       "response": {
@@ -802,7 +809,7 @@
         }
       ],
       "createdAt": "2026-01-21T17:52:19.428Z",
-      "updatedAt": "2026-01-21T17:52:19.428Z",
+      "updatedAt": "2026-01-26T18:59:44.341Z",
       "openapi": {
         "id": "endpoint_1769017939428_mbjl5jcta",
         "method": "POST",
@@ -825,7 +832,8 @@
               "email",
               "password",
               "nome",
-              "role"
+              "role",
+              "active"
             ],
             "properties": {
               "email": {
@@ -847,6 +855,11 @@
                 "type": "string",
                 "description": "",
                 "example": "ADMIN/USER"
+              },
+              "active": {
+                "type": "boolean",
+                "description": "",
+                "example": "true/false"
               }
             }
           }
@@ -2691,6 +2704,106 @@
                       "unidade": "00.Q4.C4 - Q04.Casa 04"
                     }
                   ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1769456819042_3w9jku2ir",
+      "name": "Incluir anexo",
+      "method": "POST",
+      "path": "/integracoes/mobuss/atendimento/:id/anexo",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {PUBLIC_TOKEN}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "file",
+          "type": "string",
+          "required": true,
+          "example": "",
+          "description": "Multipart/form-data, campo FILE do tipo FILE"
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "success": true,
+          "data": {
+            "file": "Sample file",
+            "id": 1,
+            "createdAt": "2026-01-26T19:46:54.298Z"
+          }
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-01-26T19:46:59.042Z",
+      "updatedAt": "2026-01-26T19:46:59.042Z",
+      "openapi": {
+        "id": "endpoint_1769456819042_3w9jku2ir",
+        "method": "POST",
+        "path": "/integracoes/mobuss/atendimento/:id/anexo",
+        "summary": "Incluir anexo",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {PUBLIC_TOKEN}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "file"
+            ],
+            "properties": {
+              "file": {
+                "type": "string",
+                "description": "Multipart/form-data, campo FILE do tipo FILE",
+                "example": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "file": "Sample file",
+                    "id": 1,
+                    "createdAt": "2026-01-26T19:46:54.298Z"
+                  }
                 }
               }
             }

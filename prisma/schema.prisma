@@ -46,7 +46,7 @@ model Motivo {
 
 model Grupo {
   id        Int      @id @default(autoincrement())
-  nome      String
+  nome      String   @unique
   status    Boolean  @default(true)
 
   subgrupos Subgrupo[]
@@ -59,7 +59,7 @@ model Grupo {
 
 model Subgrupo {
   id       Int     @id @default(autoincrement())
-  nome     String
+  nome     String  @unique
   status   Boolean @default(true)
 
   grupoId  Int

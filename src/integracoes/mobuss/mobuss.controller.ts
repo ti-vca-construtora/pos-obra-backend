@@ -4,7 +4,9 @@ import {
   Get,
   Param,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { MobussService } from './mobuss.service';
 import { CreateAtendimentoDto } from './dto/create-atendimento.dto';
@@ -15,6 +17,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import {Public} from 'src/auth/decorators/public.decorator';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('integracoes/mobuss')
@@ -51,14 +54,23 @@ consultarSolicitacoesCliente(
   return this.service.consultarSolicitacoesCliente(dto);
 }
 
-
 @Public()
-@Post('public-token')
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('PUBLIC')
 @Post('cliente')
 consultarCliente(@Body() dto: ConsultarClienteDto) {
   return this.service.consultarCliente(dto.cpfCnpj);
 }
+
+// 📎 Anexar arquivo (PÚBLICO)
+  @Public()
+  @Post('atendimento/:id/anexo')
+  @UseInterceptors(FileInterceptor('file'))
+  anexarArquivoPublico(
+    @Param('id') atendimentoId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.service.anexarArquivo(atendimentoId, file);
+  }
+
 
 }
