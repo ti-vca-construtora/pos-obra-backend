@@ -19,16 +19,19 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@index([email])
+  @@map("user")
 }
 
 model Example {
   id        Int      @id @default(autoincrement())
   title     String
-  filePath  String?   // caminho do arquivo
+  filePath  String?
   active    Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("example")
 }
 
 model Motivo {
@@ -37,6 +40,8 @@ model Motivo {
   status    Boolean  @default(true)
 
   createdAt DateTime @default(now())
+
+  @@map("motivo")
 }
 
 model Grupo {
@@ -48,6 +53,8 @@ model Grupo {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("grupo")
 }
 
 model Subgrupo {
@@ -62,6 +69,7 @@ model Subgrupo {
   updatedAt DateTime @updatedAt
 
   @@index([grupoId])
+  @@map("subgrupo")
 }
 
 model AtendimentoMobuss {
@@ -84,6 +92,7 @@ model AtendimentoMobuss {
   updatedAt        DateTime @updatedAt
 
   @@index([cpfCnpjCliente])
+  @@map("atendimentomobuss")
 }
 
 model AgendamentoMobuss {
@@ -101,4 +110,6 @@ model AgendamentoMobuss {
   payloadResposta  Json?
 
   createdAt        DateTime @default(now())
+
+  @@map("agendamentomobuss")
 }

@@ -11,7 +11,7 @@ async function main() {
   });
 
   if (adminExists) {
-    console.log('✅ Admin já existe');
+    console.log(' Admin já existe');
     return;
   }
 
