@@ -1,25 +1,39 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSubgrupoDto } from './dto/create-subgrupo.dto';
 import { UpdateSubgrupoDto } from './dto/update-subgrupo.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SubgruposService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateSubgrupoDto) {
-    const grupo = await this.prisma.grupo.findUnique({
-      where: { id: dto.grupoId },
-    });
+ async create(dto: CreateSubgrupoDto) {
+  const grupo = await this.prisma.grupo.findUnique({
+    where: { id: dto.grupoId },
+  });
 
-    if (!grupo || !grupo.status) {
-      throw new BadRequestException('Grupo inválido ou inativo');
-    }
+  if (!grupo || !grupo.status) {
+    throw new BadRequestException('Grupo inválido ou inativo');
+  }
 
-    return this.prisma.subgrupo.create({
+  try {
+    return await this.prisma.subgrupo.create({
       data: dto,
     });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new ConflictException(
+        'Já existe um subgrupo com esse nome',
+      );
+    }
+
+    throw error;
   }
+}
 
   findAll() {
     return this.prisma.subgrupo.findMany({

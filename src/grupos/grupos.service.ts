@@ -3,15 +3,28 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateGrupoDto } from './dto/create-grupo.dto';
 import { UpdateGrupoDto } from './dto/update-grupo.dto';
 
+import { ConflictException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+
 @Injectable()
 export class GruposService {
   constructor(private prisma: PrismaService) {}
 
-  create(dto: CreateGrupoDto) {
-    return this.prisma.grupo.create({
+async create(dto: CreateGrupoDto) {
+  try {
+    return await this.prisma.grupo.create({
       data: dto,
     });
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      throw new ConflictException('Grupo com esse nome já existe');
+    }
+    throw error;
   }
+}
 
   findAll() {
   return this.prisma.grupo.findMany({

@@ -1,4 +1,8 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+} from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -7,7 +11,25 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   async onModuleInit() {
-    await this.$connect();
+    let retries = 5;
+
+    while (retries > 0) {
+      try {
+        await this.$connect();
+        //console.log(' Prisma conectado ao banco');
+        return;
+      } catch (err) {
+        retries--;
+        console.log(`⏳ Aguardando banco... (${retries})`);
+        await new Promise((res) => setTimeout(res, 3000));
+      }
+    }
+
+    throw new Error('❌ Não foi possível conectar ao banco');
+  }
+
+  async enableShutdownHooks() {
+    await this.$disconnect();
   }
 
   async onModuleDestroy() {
