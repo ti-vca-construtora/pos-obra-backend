@@ -1,0 +1,19 @@
+services:
+  api:
+    networks:
+      - default
+      - web
+
+  mysql:
+    ports: []  # Remove exposição de portas para produção
+    networks:
+      - default
+
+  phpmyadmin:
+    ports: []  # Remove exposição de portas para produção
+    networks:
+      - default
+
+networks:
+  web:
+    external: true
