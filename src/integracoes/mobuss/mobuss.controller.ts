@@ -72,5 +72,24 @@ consultarCliente(@Body() dto: ConsultarClienteDto) {
     return this.service.anexarArquivo(atendimentoId, file);
   }
 
+@Public()
+@Post('atendimento/:id/status')
+consultarStatusAtendimento(@Param('id') id: string) {
+  return this.service.consultarSituacaoAtendimento(id);
+}
+
+  //  Anexar arquivo ao atendimento
+  @Public()
+  @Post('atendimento/:id/anexo')
+  @UseInterceptors(FileInterceptor('file'))
+  async anexarArquivo(
+    @Param('id') atendimentoId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.service.anexarArquivo(atendimentoId, file);
+  }
+
+
+
 
 }

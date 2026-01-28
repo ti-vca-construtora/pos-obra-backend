@@ -11,5 +11,9 @@ export class CreateSubgrupoDto {
 
   @IsOptional()
   @IsBoolean()
+  emergencia?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
   status?: boolean;
 }

@@ -5,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAtendimentoDto } from './dto/create-atendimento.dto';
 import { AgendarVisitaDto } from './dto/agendar-visita.dto';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class MobussService {
@@ -13,10 +14,25 @@ export class MobussService {
   constructor(
     private readonly http: HttpService,
     private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
   ) {}
 
   // ETAPA 1 — Incluir Solicitação de Atendimento
   async criarAtendimento(dto: CreateAtendimentoDto) {
+let isEmergencial = false;
+
+if (dto.subgrupoId) {
+  const subgrupo = await this.prisma.subgrupo.findUnique({
+    where: { id: dto.subgrupoId },
+  });
+
+  if (!subgrupo || !subgrupo.status) {
+    throw new BadRequestException('Subgrupo inválido ou inativo');
+  }
+
+  isEmergencial = subgrupo.emergencia === true;
+}
+
     try {
       const response = await firstValueFrom(
         this.http.post(
@@ -38,7 +54,7 @@ export class MobussService {
         data: {
           idMobuss,
           numSolicitacao,
-          status: 'AGUARDANDO_AGENDAMENTO',
+          status: isEmergencial ? 'EMERGENCIAL' : 'AGUARDANDO_AGENDAMENTO',
 
            cpfCnpjCliente: dto.cpfCnpjCliente,
            nomeSolicitante: dto.nomeSolicitante,
@@ -49,11 +65,37 @@ export class MobussService {
         },
       });
 
+      //  4. Se for emergencial → ENCERRA fluxo
+    if (isEmergencial) {
+      // enviar email aqui
+       await this.emailService.enviarEmergencial({
+         para: dto.emailSolicitante,
+         nome: dto.nomeSolicitante,
+         protocolo: numSolicitacao,
+         descricao: dto.desSolicitacao,
+       }).catch((err)=>{
+         console.error('ERRO AO ENVIAR EMAIL (IGNORADO) >>>', err);
+       });
+
       return {
         atendimentoId: atendimento.id,
         idMobuss,
         numSolicitacao,
+        emergencial: true,
+        podeAgendar: false,
+        mensagem:
+          'Chamado emergencial registrado. Nossa equipe entrará em contato.',
       };
+    }
+
+      // 🔹 5. Fluxo normal
+    return {
+      atendimentoId: atendimento.id,
+      idMobuss,
+      numSolicitacao,
+      emergencial: isEmergencial,
+      podeAgendar: !isEmergencial,
+    };
     } catch (error: any) {
       // Persistir erro (opcional)
       await this.prisma.atendimentoMobuss.create({
@@ -221,7 +263,7 @@ async consultarSituacaoAtendimento(atendimentoId: string) {
   }
 
   const payload = {
-    idSolicitacaoAtendimento: atendimento.idMobuss,
+    idSolicitacaoAtendimento: atendimento.idMobuss, // ✔ CORRETO
   };
 
   try {
@@ -251,6 +293,7 @@ async consultarSituacaoAtendimento(atendimentoId: string) {
     );
   }
 }
+
 
 async consultarCliente(cpfCnpj: string) {
   try {
@@ -342,7 +385,7 @@ async anexarArquivo(
 
   const response = await firstValueFrom(
     this.http.post(
-      `${this.baseUrl}/ccapi/assistencia/anexo/v1/incluir`,
+      `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/incluirAnexoSolicitacaoAtendimento`,
       payload,
       {
         headers: {

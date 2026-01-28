@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-26T19:47:01.342Z",
+  "generatedAt": "2026-01-28T16:06:55.981Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -170,6 +170,13 @@
           "required": true,
           "example": "TECNOLOGIA_123",
           "description": "Pegar do endpoint locais obra"
+        },
+        {
+          "name": "subgrupoId",
+          "type": "string",
+          "required": false,
+          "example": "1",
+          "description": "passar o id do subgrupo para o backend verificar se é emergencial ou nao"
         }
       ],
       "response": {
@@ -177,9 +184,11 @@
         "contentType": "application/json",
         "description": "",
         "example": {
-          "atendimentoId": "951ed83d-cc10-4f61-9b35-270378b768c8",
-          "idMobuss": "TECLOGICA_12345",
-          "numSolicitacao": "19140"
+          "atendimentoId": "3c3ddd7c-5f01-4ce8-a4cd-6c408d6a3a2a",
+          "idMobuss": "TECLOGICA_841806",
+          "numSolicitacao": "19314",
+          "emergencial": false,
+          "podeAgendar": true
         }
       },
       "errorResponses": [
@@ -194,7 +203,7 @@
         }
       ],
       "createdAt": "2026-01-21T12:53:22.482Z",
-      "updatedAt": "2026-01-21T12:53:22.482Z",
+      "updatedAt": "2026-01-28T14:24:47.122Z",
       "openapi": {
         "id": "endpoint_1769000002482_9xmsx4w6u",
         "method": "POST",
@@ -257,6 +266,11 @@
                 "type": "string",
                 "description": "Pegar do endpoint locais obra",
                 "example": "TECNOLOGIA_123"
+              },
+              "subgrupoId": {
+                "type": "string",
+                "description": "passar o id do subgrupo para o backend verificar se é emergencial ou nao",
+                "example": "1"
               }
             }
           }
@@ -267,9 +281,11 @@
             "content": {
               "application/json": {
                 "example": {
-                  "atendimentoId": "951ed83d-cc10-4f61-9b35-270378b768c8",
-                  "idMobuss": "TECLOGICA_12345",
-                  "numSolicitacao": "19140"
+                  "atendimentoId": "3c3ddd7c-5f01-4ce8-a4cd-6c408d6a3a2a",
+                  "idMobuss": "TECLOGICA_841806",
+                  "numSolicitacao": "19314",
+                  "emergencial": false,
+                  "podeAgendar": true
                 }
               }
             }
@@ -546,15 +562,22 @@
       "path": "/integracoes/mobuss/atendimento/{id}/anexos",
       "description": "multipart/form-data",
       "category": "General",
-      "headers": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {PUBLIC_TOKEN}",
+          "required": true,
+          "description": ""
+        }
+      ],
       "queryParams": [],
       "bodyParams": [
         {
           "name": "file",
           "type": "string",
           "required": true,
-          "example": "",
-          "description": "Tipo file"
+          "example": "tipo arquivo",
+          "description": "multipart/form-data"
         }
       ],
       "response": {
@@ -575,7 +598,7 @@
         }
       ],
       "createdAt": "2026-01-21T13:38:33.478Z",
-      "updatedAt": "2026-01-21T13:38:33.478Z",
+      "updatedAt": "2026-01-28T14:09:36.998Z",
       "openapi": {
         "id": "endpoint_1769002713477_wyizvlkiv",
         "method": "POST",
@@ -583,7 +606,14 @@
         "summary": "Anexer documentos ao atendimento",
         "description": "multipart/form-data",
         "request": {
-          "headers": [],
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {PUBLIC_TOKEN}",
+              "required": true,
+              "description": ""
+            }
+          ],
           "query": [],
           "body": {
             "type": "object",
@@ -593,8 +623,8 @@
             "properties": {
               "file": {
                 "type": "string",
-                "description": "Tipo file",
-                "example": ""
+                "description": "multipart/form-data",
+                "example": "tipo arquivo"
               }
             }
           }
@@ -2712,10 +2742,10 @@
       }
     },
     {
-      "id": "endpoint_1769456819042_3w9jku2ir",
-      "name": "Incluir anexo",
+      "id": "endpoint_1769606761823_ghk6yjqrb",
+      "name": "Consultar atendimento do cliente",
       "method": "POST",
-      "path": "/integracoes/mobuss/atendimento/:id/anexo",
+      "path": "/integracoes/mobuss/atendimento/{atendimentoId}/status",
       "description": "",
       "category": "General",
       "headers": [
@@ -2727,26 +2757,38 @@
         }
       ],
       "queryParams": [],
-      "bodyParams": [
-        {
-          "name": "file",
-          "type": "string",
-          "required": true,
-          "example": "",
-          "description": "Multipart/form-data, campo FILE do tipo FILE"
-        }
-      ],
+      "bodyParams": [],
       "response": {
         "code": 200,
         "contentType": "application/json",
         "description": "",
         "example": {
-          "success": true,
-          "data": {
-            "file": "Sample file",
-            "id": 1,
-            "createdAt": "2026-01-26T19:46:54.298Z"
-          }
+          "id": "string",
+          "idLegado": "string",
+          "numero": 0,
+          "situacao": "string",
+          "dataAbertura": "2022-03-10T00:00:00.000Z",
+          "obra": "string",
+          "unidade": "string",
+          "dataResolucao": "2022-03-10T00:00:00.000Z",
+          "dataEncerramento": "2022-03-10T00:00:00.000Z",
+          "diagnostico": "string",
+          "procedencia": true,
+          "descricao": "string",
+          "visitas": [
+            {
+              "idVisita": "TECLOGICA_123",
+              "tipoVisita": "Vistoria",
+              "situacaoVisita": "string",
+              "dataInicioPrevisto": "2022-03-10T00:00:00.000Z",
+              "dataFimPrevisto": "2022-03-10T00:00:00.000Z",
+              "dataInicioRealizado": "2022-03-10T00:00:00.000Z",
+              "dataFimRealizado": "2022-03-10T00:00:00.000Z",
+              "observacaoVisita": "string",
+              "colaboradoresVisita": "string",
+              "empreiteirasVisita": "string"
+            }
+          ]
         }
       },
       "errorResponses": [
@@ -2760,13 +2802,13 @@
           }
         }
       ],
-      "createdAt": "2026-01-26T19:46:59.042Z",
-      "updatedAt": "2026-01-26T19:46:59.042Z",
+      "createdAt": "2026-01-28T13:26:01.824Z",
+      "updatedAt": "2026-01-28T13:26:01.824Z",
       "openapi": {
-        "id": "endpoint_1769456819042_3w9jku2ir",
+        "id": "endpoint_1769606761823_ghk6yjqrb",
         "method": "POST",
-        "path": "/integracoes/mobuss/atendimento/:id/anexo",
-        "summary": "Incluir anexo",
+        "path": "/integracoes/mobuss/atendimento/{atendimentoId}/status",
+        "summary": "Consultar atendimento do cliente",
         "description": "",
         "request": {
           "headers": [
@@ -2780,16 +2822,7 @@
           "query": [],
           "body": {
             "type": "object",
-            "required": [
-              "file"
-            ],
-            "properties": {
-              "file": {
-                "type": "string",
-                "description": "Multipart/form-data, campo FILE do tipo FILE",
-                "example": ""
-              }
-            }
+            "properties": {}
           }
         },
         "responses": {
@@ -2798,12 +2831,32 @@
             "content": {
               "application/json": {
                 "example": {
-                  "success": true,
-                  "data": {
-                    "file": "Sample file",
-                    "id": 1,
-                    "createdAt": "2026-01-26T19:46:54.298Z"
-                  }
+                  "id": "string",
+                  "idLegado": "string",
+                  "numero": 0,
+                  "situacao": "string",
+                  "dataAbertura": "2022-03-10T00:00:00.000Z",
+                  "obra": "string",
+                  "unidade": "string",
+                  "dataResolucao": "2022-03-10T00:00:00.000Z",
+                  "dataEncerramento": "2022-03-10T00:00:00.000Z",
+                  "diagnostico": "string",
+                  "procedencia": true,
+                  "descricao": "string",
+                  "visitas": [
+                    {
+                      "idVisita": "TECLOGICA_123",
+                      "tipoVisita": "Vistoria",
+                      "situacaoVisita": "string",
+                      "dataInicioPrevisto": "2022-03-10T00:00:00.000Z",
+                      "dataFimPrevisto": "2022-03-10T00:00:00.000Z",
+                      "dataInicioRealizado": "2022-03-10T00:00:00.000Z",
+                      "dataFimRealizado": "2022-03-10T00:00:00.000Z",
+                      "observacaoVisita": "string",
+                      "colaboradoresVisita": "string",
+                      "empreiteirasVisita": "string"
+                    }
+                  ]
                 }
               }
             }

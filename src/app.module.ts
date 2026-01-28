@@ -19,6 +19,7 @@ import {ScheduleModule} from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
 import { AtendimentosModule } from './atendimentos/atendimentos.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { AtendimentosModule } from './atendimentos/atendimentos.module';
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/docs',
     }),
-    AtendimentosModule,    
+    AtendimentosModule,   
+    EmailModule, 
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],

@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Usuario {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
@@ -19,7 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@index([email])
-  @@map("user")
+  @@map("usuario")
 }
 
 model Example {
@@ -61,6 +61,8 @@ model Subgrupo {
   id       Int     @id @default(autoincrement())
   nome     String  @unique
   status   Boolean @default(true)
+
+  emergencia Boolean @default(false)
 
   grupoId  Int
   grupo    Grupo   @relation(fields: [grupoId], references: [id])

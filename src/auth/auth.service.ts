@@ -26,7 +26,7 @@ export class AuthService {
 
 
   async login(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.usuario.findUnique({ where: { email } });
 
     if (!user || !user.active) {
       throw new UnauthorizedException();
@@ -57,7 +57,7 @@ export class AuthService {
 
   //criar um novo usuario
   async register(dto: RegisterDto) {
-    const exists = await this.prisma.user.findUnique({
+    const exists = await this.prisma.usuario.findUnique({
       where: { email: dto.email },
     });
 
@@ -67,7 +67,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    const user = await this.prisma.user.create({
+    const user = await this.prisma.usuario.create({
       data: {
         email: dto.email,
         password: hashedPassword,

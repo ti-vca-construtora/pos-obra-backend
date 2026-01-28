@@ -1,4 +1,4 @@
-import { IsDateString, IsEmail, IsString } from 'class-validator';
+import { IsDateString, IsEmail, IsInt, IsString } from 'class-validator';
 
 export class CreateAtendimentoDto {
   @IsString()
@@ -21,4 +21,7 @@ export class CreateAtendimentoDto {
 
   @IsString()
   idLocal: string;
+
+  @IsInt()
+  subgrupoId: number;
 }

@@ -10,7 +10,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateUserDto) {
-    const exists = await this.prisma.user.findUnique({
+    const exists = await this.prisma.usuario.findUnique({
       where: { email: dto.email },
     });
 
@@ -20,7 +20,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    return this.prisma.user.create({
+    return this.prisma.usuario.create({
       data: {
         email: dto.email,
         nome: dto.nome,
@@ -40,7 +40,7 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prisma.user.findMany({
+    return this.prisma.usuario.findMany({
       select: {
         id: true,
         email: true,
@@ -60,7 +60,7 @@ async update(id: number, dto: UpdateUserDto) {
     data.password = await bcrypt.hash(dto.password, 10);
   }
 
-  return this.prisma.user.update({
+  return this.prisma.usuario.update({
     where: { id },
     data,
     select: {
@@ -74,14 +74,14 @@ async update(id: number, dto: UpdateUserDto) {
 }
 
 async remove(id: number) {
-  const user = await this.prisma.user.findUnique({ where: { id } });
+  const user = await this.prisma.usuario.findUnique({ where: { id } });
 
   if (!user) {
     throw new NotFoundException('Usuário não encontrado');
   }
 
   if (user.role === 'ADMIN') {
-    const admins = await this.prisma.user.count({
+    const admins = await this.prisma.usuario.count({
       where: { role: 'ADMIN', active: true },
     });
 
@@ -92,7 +92,7 @@ async remove(id: number) {
     }
   }
 
-  return this.prisma.user.delete({ where: { id } });
+  return this.prisma.usuario.delete({ where: { id } });
 }
 
 
