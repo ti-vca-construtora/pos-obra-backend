@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-28T16:06:55.981Z",
+  "generatedAt": "2026-01-29T15:54:30.082Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -2745,7 +2745,7 @@
       "id": "endpoint_1769606761823_ghk6yjqrb",
       "name": "Consultar atendimento do cliente",
       "method": "POST",
-      "path": "/integracoes/mobuss/atendimento/{atendimentoId}/status",
+      "path": "/integracoes/mobuss/atendimento/status",
       "description": "",
       "category": "General",
       "headers": [
@@ -2757,38 +2757,27 @@
         }
       ],
       "queryParams": [],
-      "bodyParams": [],
+      "bodyParams": [
+        {
+          "name": "idSolicitacaoAtendimento",
+          "type": "string",
+          "required": true,
+          "example": "TECLOGICA_841806",
+          "description": ""
+        }
+      ],
       "response": {
         "code": 200,
         "contentType": "application/json",
         "description": "",
         "example": {
-          "id": "string",
-          "idLegado": "string",
-          "numero": 0,
-          "situacao": "string",
-          "dataAbertura": "2022-03-10T00:00:00.000Z",
-          "obra": "string",
-          "unidade": "string",
-          "dataResolucao": "2022-03-10T00:00:00.000Z",
-          "dataEncerramento": "2022-03-10T00:00:00.000Z",
-          "diagnostico": "string",
-          "procedencia": true,
-          "descricao": "string",
-          "visitas": [
-            {
-              "idVisita": "TECLOGICA_123",
-              "tipoVisita": "Vistoria",
-              "situacaoVisita": "string",
-              "dataInicioPrevisto": "2022-03-10T00:00:00.000Z",
-              "dataFimPrevisto": "2022-03-10T00:00:00.000Z",
-              "dataInicioRealizado": "2022-03-10T00:00:00.000Z",
-              "dataFimRealizado": "2022-03-10T00:00:00.000Z",
-              "observacaoVisita": "string",
-              "colaboradoresVisita": "string",
-              "empreiteirasVisita": "string"
-            }
-          ]
+          "descricao": "Cadastro de teste sistema Pós Obra",
+          "id": "TECLOGICA_841806",
+          "numero": 19314,
+          "situacao": "Aberta",
+          "dataAbertura": "2026-01-12T12:30:00.000Z",
+          "obra": "Conde Residence I",
+          "unidade": "00.Q4.C4 - Q04.Casa 04"
         }
       },
       "errorResponses": [
@@ -2803,11 +2792,11 @@
         }
       ],
       "createdAt": "2026-01-28T13:26:01.824Z",
-      "updatedAt": "2026-01-28T13:26:01.824Z",
+      "updatedAt": "2026-01-29T15:48:24.170Z",
       "openapi": {
         "id": "endpoint_1769606761823_ghk6yjqrb",
         "method": "POST",
-        "path": "/integracoes/mobuss/atendimento/{atendimentoId}/status",
+        "path": "/integracoes/mobuss/atendimento/status",
         "summary": "Consultar atendimento do cliente",
         "description": "",
         "request": {
@@ -2822,7 +2811,16 @@
           "query": [],
           "body": {
             "type": "object",
-            "properties": {}
+            "required": [
+              "idSolicitacaoAtendimento"
+            ],
+            "properties": {
+              "idSolicitacaoAtendimento": {
+                "type": "string",
+                "description": "",
+                "example": "TECLOGICA_841806"
+              }
+            }
           }
         },
         "responses": {
@@ -2831,32 +2829,13 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": "string",
-                  "idLegado": "string",
-                  "numero": 0,
-                  "situacao": "string",
-                  "dataAbertura": "2022-03-10T00:00:00.000Z",
-                  "obra": "string",
-                  "unidade": "string",
-                  "dataResolucao": "2022-03-10T00:00:00.000Z",
-                  "dataEncerramento": "2022-03-10T00:00:00.000Z",
-                  "diagnostico": "string",
-                  "procedencia": true,
-                  "descricao": "string",
-                  "visitas": [
-                    {
-                      "idVisita": "TECLOGICA_123",
-                      "tipoVisita": "Vistoria",
-                      "situacaoVisita": "string",
-                      "dataInicioPrevisto": "2022-03-10T00:00:00.000Z",
-                      "dataFimPrevisto": "2022-03-10T00:00:00.000Z",
-                      "dataInicioRealizado": "2022-03-10T00:00:00.000Z",
-                      "dataFimRealizado": "2022-03-10T00:00:00.000Z",
-                      "observacaoVisita": "string",
-                      "colaboradoresVisita": "string",
-                      "empreiteirasVisita": "string"
-                    }
-                  ]
+                  "descricao": "Cadastro de teste sistema Pós Obra",
+                  "id": "TECLOGICA_841806",
+                  "numero": 19314,
+                  "situacao": "Aberta",
+                  "dataAbertura": "2026-01-12T12:30:00.000Z",
+                  "obra": "Conde Residence I",
+                  "unidade": "00.Q4.C4 - Q04.Casa 04"
                 }
               }
             }

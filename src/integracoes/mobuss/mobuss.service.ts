@@ -253,17 +253,10 @@ async agendarVisita(atendimentoId: string, dto: AgendarVisitaDto) {
   }
 }
 
-async consultarSituacaoAtendimento(atendimentoId: string) {
-  const atendimento = await this.prisma.atendimentoMobuss.findUnique({
-    where: { id: atendimentoId },
-  });
 
-  if (!atendimento) {
-    throw new Error('Atendimento não encontrado');
-  }
-
+async consultarSituacaoAtendimento(idSolicitacaoAtendimento: string) {
   const payload = {
-    idSolicitacaoAtendimento: atendimento.idMobuss, // ✔ CORRETO
+    idSolicitacaoAtendimento,
   };
 
   try {
@@ -293,6 +286,7 @@ async consultarSituacaoAtendimento(atendimentoId: string) {
     );
   }
 }
+
 
 
 async consultarCliente(cpfCnpj: string) {

@@ -18,6 +18,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import {Public} from 'src/auth/decorators/public.decorator';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ConsultarStatusAtendimentoDto } from './dto/consultar-status-atendimento.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('integracoes/mobuss')
@@ -73,9 +74,11 @@ consultarCliente(@Body() dto: ConsultarClienteDto) {
   }
 
 @Public()
-@Post('atendimento/:id/status')
-consultarStatusAtendimento(@Param('id') id: string) {
-  return this.service.consultarSituacaoAtendimento(id);
+@Post('atendimento/status')
+consultarStatusAtendimento(
+  @Body() dto: ConsultarStatusAtendimentoDto,
+) {
+  return this.service.consultarSituacaoAtendimento(dto.idSolicitacaoAtendimento);
 }
 
   //  Anexar arquivo ao atendimento
