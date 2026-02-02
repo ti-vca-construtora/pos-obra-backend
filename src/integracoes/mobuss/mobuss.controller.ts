@@ -83,14 +83,14 @@ consultarStatusAtendimento(
 
   //  Anexar arquivo ao atendimento
   @Public()
-  @Post('atendimento/:id/anexo')
-  @UseInterceptors(FileInterceptor('file'))
-  async anexarArquivo(
-    @Param('id') atendimentoId: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.service.anexarArquivo(atendimentoId, file);
-  }
+ @Post('atendimento/:id/anexo')
+@UseInterceptors(FileInterceptor('file'))
+anexarArquivo(
+  @Param('id') atendimentoId: string,
+  @UploadedFile() file: Express.Multer.File,
+) {
+  return this.service.anexarArquivo(atendimentoId, file);
+}
 
 
 

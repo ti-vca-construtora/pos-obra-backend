@@ -7,6 +7,8 @@ import { AgendarVisitaDto } from './dto/agendar-visita.dto';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
 import { EmailService } from 'src/email/email.service';
 
+import FormData from 'form-data';
+
 @Injectable()
 export class MobussService {
    private readonly baseUrl = process.env.MOBUSS_BASE_URL;
@@ -354,7 +356,6 @@ async consultarSolicitacoesCliente(dto: ConsultarSolicitacoesClienteDto) {
   }
 }
 
-
 async anexarArquivo(
   atendimentoId: string,
   file: Express.Multer.File,
@@ -371,31 +372,38 @@ async anexarArquivo(
     throw new NotFoundException('Atendimento não encontrado');
   }
 
-  const payload = {
-    idSolicitacao: atendimento.idMobuss,
-    nomeArquivo: file.originalname,
-    arquivoBase64: file.buffer.toString('base64'),
+  const formData = new FormData();
+
+  // ⚠️ AQUI É A DIFERENÇA
+  formData.append('anexo', file.buffer, {
+    filename: file.originalname,
+    contentType: file.mimetype,
+  });
+
+  const nomeSemExtensao = file.originalname
+    .split('.')
+    .slice(0, -1)
+    .join('.');
+
+  const headers = {
+    Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+    idLegadoAnexo: `${atendimento.idMobuss}_${nomeSemExtensao}`,
+    idMobussOrigem: atendimento.idMobuss,
+    nomeAnexo: nomeSemExtensao,
+    ...formData.getHeaders(), // ✅ AGORA FUNCIONA
   };
 
   const response = await firstValueFrom(
     this.http.post(
       `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/incluirAnexoSolicitacaoAtendimento`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-      },
+      formData,
+      { headers },
     ),
   );
 
-  return {
-    success: true,
-    atendimentoId: atendimento.id,
-    mobuss: response.data,
-  };
+  return response.data;
 }
+
 
 
 }

@@ -27,8 +27,7 @@ async create(dto: CreateGrupoDto) {
 }
 
   findAll() {
-  return this.prisma.grupo.findMany({
-    where: { status: true },
+  return this.prisma.grupo.findMany({   
     include: { subgrupos: true },
   });
 }
