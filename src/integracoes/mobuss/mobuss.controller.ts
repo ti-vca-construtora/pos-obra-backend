@@ -31,8 +31,8 @@ export class MobussController {
     return this.service.criarAtendimento(dto);
   }
 
-  @Public()
-  @Post('atendimento/:id/disponibilidade')
+@Public()
+@Post('atendimento/:id/disponibilidade')
 consultarDisponibilidade(@Param('id') id: string) {
   return this.service.consultarDisponibilidade(id);
 }

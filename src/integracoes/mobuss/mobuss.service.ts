@@ -7,6 +7,9 @@ import { AgendarVisitaDto } from './dto/agendar-visita.dto';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
 import { EmailService } from 'src/email/email.service';
 
+import { addDays, startOfDay } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
+
 import FormData from 'form-data';
 
 @Injectable()
@@ -123,15 +126,25 @@ if (dto.subgrupoId) {
   }
 
 private getDataConsulta() {
-  const inicio = new Date();
-  inicio.setDate(inicio.getDate() + 1);
-  inicio.setHours(0, 0, 0, 0);
+  const timeZone = 'America/Sao_Paulo';
+
+  // data atual no fuso do Brasil
+  const agoraBrasil = new Date(
+    new Date().toLocaleString('en-US', { timeZone }),
+  );
+
+  // +3 dias e início do dia (00:00)
+  const inicioBrasil = startOfDay(addDays(agoraBrasil, 3));
+
+  // converte para UTC (Mobuss espera ISO)
+  const inicioUTC = fromZonedTime(inicioBrasil, timeZone);
 
   return {
-    dataHoraInicio: inicio.toISOString(),
+    dataHoraInicio: inicioUTC.toISOString(),
     numDisponibilidades: 6,
   };
 }
+
 
 
 async consultarDisponibilidade(atendimentoId: string) {
