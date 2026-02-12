@@ -22,8 +22,8 @@ export class MobussService {
     private readonly emailService: EmailService,
   ) {}
 
-  // ETAPA 1 — Incluir Solicitação de Atendimento
-  async criarAtendimento(dto: CreateAtendimentoDto) {
+// ETAPA 1 — Incluir Solicitação de Atendimento
+ async criarAtendimento(dto: CreateAtendimentoDto) {
 let isEmergencial = false;
 
 if (dto.subgrupoId) {
@@ -70,15 +70,34 @@ if (dto.subgrupoId) {
         },
       });
 
-      //  4. Se for emergencial → ENCERRA fluxo
+     //  4. Se for emergencial → ENCERRA fluxo
     if (isEmergencial) {
       // enviar email aqui
-       await this.emailService.enviarEmergencial({
-         para: dto.emailSolicitante,
-         nome: dto.nomeSolicitante,
-         protocolo: numSolicitacao,
-         descricao: dto.desSolicitacao,
-       }).catch((err)=>{
+       await this.emailService.enviar({
+  para: dto.emailSolicitante,
+  assunto: 'Atendimento Emergencial',
+  template: 'emergencia',
+  variaveis: {
+    nome_cliente: dto.nomeSolicitante,
+    id_protocolo: numSolicitacao,
+    descricao_servico: dto.desSolicitacao,
+    nome_empresa: 'VCA Construtora',
+    local_unidade: '-',
+    data_criacao: new Date().toLocaleDateString('pt-BR'),
+    tipo_servico: 'Pós-Obra',
+
+    tag_urgente: isEmergencial
+      ? `
+        <p>
+          <span class="urgent-tag">Atendimento Urgente</span><br>
+          <small style="color:#666;">
+            Identificamos que sua solicitação é prioritária e nossa equipe entrará em contato o mais breve possível.
+          </small>
+        </p>
+        `
+      : '',
+  },
+}).catch((err)=>{
          console.error('ERRO AO ENVIAR EMAIL (IGNORADO) >>>', err);
        });
 

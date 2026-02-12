@@ -21,6 +21,8 @@ import { TasksModule } from './tasks/tasks.module';
 import { AtendimentosModule } from './atendimentos/atendimentos.module';
 import { EmailModule } from './email/email.module';
 
+import {ConfigModule} from '@nestjs/config';
+
 @Module({
   imports: [
     UsersModule, 
@@ -39,6 +41,9 @@ import { EmailModule } from './email/email.module';
     }),
     AtendimentosModule,   
     EmailModule, 
+     ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],

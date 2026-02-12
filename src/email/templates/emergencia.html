@@ -1,28 +1,91 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Atendimento Emergencial</title>
-  </head>
-  <body style="font-family: Arial, sans-serif;">
-    <h2>🚨 Atendimento Emergencial Registrado</h2>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Ubuntu', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f4f4f4; padding-bottom: 40px; }
+        .main { background-color: #ffffff; margin: 0 auto; width: 100%; max-width: 600px; border-spacing: 0; color: #333333; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header { background-color: #1a1a1a; padding: 30px; text-align: center; }
+        .logo { width: 120px; }
+        .content { padding: 40px 30px; line-height: 1.6; }
+        .title { color: #1a1a1a; font-size: 22px; font-weight: bold; margin-bottom: 20px; }
+        .highlight-box { background-color: #f8fdf8; border-left: 4px solid #01C001; padding: 20px; margin: 25px 0; }
+        .protocol { font-size: 28px; color: #1a1a1a; font-weight: 800; display: block; margin-top: 10px; }
+        .details-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .details-table td { padding: 12px 8px; border-bottom: 1px solid #eeeeee; font-size: 14px; }
+        .label { font-weight: bold; color: #666666; width: 30%; }
+        .value { color: #333333; }
+        .footer { background-color: #1a1a1a; color: #ffffff; padding: 30px; text-align: center; font-size: 12px; }
+        .button { background-color: #01C001; color: #000000 !important; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px; }
+        .urgent-tag { background-color: #ff4d4d; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <table class="main">
+            <tr>
+                <td class="header">
+                    <img src="https://seusite.com.br/assets/Logo-verde.svg" alt="VCA Construtora" class="logo">
+                </td>
+            </tr>
 
-    <p>Olá <strong>{{nome}}</strong>,</p>
+            <tr>
+                <td class="content">
+                    <div class="title">Olá, {{nome_cliente}}!</div>
+                    <p>Sua solicitação de atendimento pós obra foi registrada com sucesso em nosso sistema.</p>
+                    
+                    <div class="highlight-box">
+                        <span style="font-size: 14px; color: #666;">Número do Protocolo:</span><br>
+                        <span class="protocol">{{id_protocolo}}</span>
+                    </div>
 
-    <p>
-      Recebemos sua solicitação emergencial. Nossa equipe já foi
-      notificada e entrará em contato o mais breve possível.
-    </p>
+                    <p><strong>Status:</strong> Em análise pela equipe técnica.</p>
+                    {{tag_urgente}}                   
 
-    <p><strong>Protocolo:</strong> {{protocolo}}</p>
+                    <table class="details-table">
+                        <tr>
+                            <td class="label">Empreendimento</td>
+                            <td class="value">{{nome_empresa}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Local/Unidade</td>
+                            <td class="value">{{local_unidade}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Data de Abertura</td>
+                            <td class="value">{{data_criacao}}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Tipo de Serviço</td>
+                            <td class="value">{{tipo_servico}}</td>
+                        </tr>
+                    </table>
 
-    <p><strong>Descrição:</strong></p>
-    <p>{{descricao}}</p>
+                    <div style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 5px; font-size: 14px;">
+                        <strong>Descrição informada:</strong><br>
+                        <em>{{descricao_servico}}</em>
+                    </div>
 
-    <hr />
+                    <div style="text-align: center;">
+                        <a href="https://posobra.vcaconstrutora.com.br" class="button">ACOMPANHAR SOLICITAÇÃO</a>
+                    </div>
+                </td>
+            </tr>
 
-    <p style="font-size: 12px; color: #666;">
-      Este é um email automático. Não responda.
-    </p>
-  </body>
+            <tr>
+                <td class="footer">
+                    <p><strong>VCA Construtora | Pós-Obra</strong></p>
+                    <p>Av. Olívia Flores, 1265, Vitória da Conquista - BA</p>
+                    <p>Este é um e-mail automático, por favor não responda.</p>
+                    <div style="margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                        <a href="#" style="color: #01C001; text-decoration: none; margin: 0 10px;">Portal do Cliente</a> | 
+                        <a href="#" style="color: #01C001; text-decoration: none; margin: 0 10px;">Privacidade</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
 </html>

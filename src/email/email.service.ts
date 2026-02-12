@@ -1,69 +1,94 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from 'path';
+
+interface EnviarEmailParams {
+  para: string;
+  assunto: string;
+  template: string;
+  variaveis?: Record<string, string | number>;
+}
 
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false, // true se for 465
+      host: this.configService.get<string>('SMTP_HOST'),
+      port: Number(this.configService.get<number>('SMTP_PORT')),
+      secure:
+        Number(this.configService.get<number>('SMTP_PORT')) === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: this.configService.get<string>('SMTP_USER'),
+        pass: this.configService.get<string>('SMTP_PASS'),
       },
     });
   }
 
   private carregarTemplate(
-    nomeTemplate: string,
-    variaveis: Record<string, string>,
-  ): string {
-    const caminho = path.join(
-      __dirname,
-      'templates',
-      `${nomeTemplate}.html`,
-    );
+  nomeTemplate: string,
+  variaveis: Record<string, string | number> = {},
+): string {
 
-    let html = fs.readFileSync(caminho, 'utf-8');
+  const caminhoDev = path.join(
+    process.cwd(),
+    'src',
+    'email',
+    'templates',
+    `${nomeTemplate}.html`,
+  );
 
-    for (const chave in variaveis) {
-      html = html.replace(
-        new RegExp(`{{${chave}}}`, 'g'),
-        variaveis[chave],
-      );
-    }
+  const caminhoProd = path.join(
+    __dirname,
+    'templates',
+    `${nomeTemplate}.html`,
+  );
 
-    return html;
+  let caminhoFinal = '';
+
+  if (fs.existsSync(caminhoDev)) {
+    caminhoFinal = caminhoDev;
+  } else if (fs.existsSync(caminhoProd)) {
+    caminhoFinal = caminhoProd;
+  } else {
+    throw new Error(`Template ${nomeTemplate} não encontrado`);
   }
 
-  async enviarEmergencial(params: {
-    para: string;
-    nome: string;
-    protocolo: string;
-    descricao: string;
-  }) {
+  let html = fs.readFileSync(caminhoFinal, 'utf-8');
+
+  for (const chave in variaveis) {
+    html = html.replace(
+      new RegExp(`{{${chave}}}`, 'g'),
+      String(variaveis[chave]),
+    );
+  }
+
+  return html;
+}
+
+
+  async enviar(params: EnviarEmailParams) {
     try {
-      const html = this.carregarTemplate('emergencia', {
-        nome: params.nome,
-        protocolo: params.protocolo,
-        descricao: params.descricao,
-      });
+      const html = this.carregarTemplate(
+        params.template,
+        params.variaveis,
+      );
 
       await this.transporter.sendMail({
-        from: `"Pós Obra" <${process.env.SMTP_FROM}>`,
+        from: `"Pós Obra" <${this.configService.get<string>('SMTP_FROM')}>`,
         to: params.para,
-        subject: '🚨 Atendimento Emergencial Registrado',
+        subject: params.assunto,
         html,
       });
+
+      return true;
     } catch (error) {
       console.error('ERRO AO ENVIAR EMAIL >>>', error);
       throw new InternalServerErrorException(
-        'Erro ao enviar email de emergência',
+        'Erro ao enviar email',
       );
     }
   }

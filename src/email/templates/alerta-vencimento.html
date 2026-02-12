@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Lembrete de Atendimento</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;">
+    <tr>
+      <td align="center">
+
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.08);">
+
+          <!-- HEADER -->
+          <tr>
+            <td style="background-color:#1a1a1a;padding:25px;text-align:center;">
+              <h2 style="color:#ffffff;margin:0;">VCA Construtora - Pós Obra</h2>
+            </td>
+          </tr>
+
+          <!-- CONTEÚDO -->
+          <tr>
+            <td style="padding:35px 30px;color:#333333;line-height:1.6;">
+
+              <h3 style="margin-top:0;">Olá, {{nome}}!</h3>
+
+              <p>
+                Este é um lembrete importante referente ao seu atendimento
+                registrado em nosso sistema.
+              </p>
+
+              <div style="background:#f8f8f8;border-left:4px solid #01C001;padding:20px;margin:25px 0;">
+                <strong>Protocolo:</strong><br>
+                <span style="font-size:20px;font-weight:bold;">
+                  {{protocolo}}
+                </span>
+              </div>
+
+              <p>
+                Seu atendimento está agendado para:
+              </p>
+
+              <p style="font-size:18px;font-weight:bold;color:#1a1a1a;">
+                {{data}}
+              </p>
+
+              <p>
+                Caso tenha alguma dúvida ou precise de informações adicionais,
+                nossa equipe está à disposição.
+              </p>
+
+              <div style="text-align:center;margin-top:30px;">
+                <a href="https://posobra.vcaconstrutora.com.br"
+                   style="background-color:#01C001;
+                          color:#000000;
+                          padding:14px 25px;
+                          text-decoration:none;
+                          font-weight:bold;
+                          border-radius:5px;
+                          display:inline-block;">
+                  Acompanhar Solicitação
+                </a>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color:#1a1a1a;color:#ffffff;padding:25px;text-align:center;font-size:12px;">
+              <p style="margin:0 0 10px 0;"><strong>VCA Construtora | Pós-Obra</strong></p>
+              <p style="margin:0;">Este é um e-mail automático, por favor não responda.</p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
