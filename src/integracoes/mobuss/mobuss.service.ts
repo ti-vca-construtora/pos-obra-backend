@@ -71,23 +71,25 @@ if (dto.subgrupoId) {
       });
 
      //  4. Se for emergencial → ENCERRA fluxo
-    if (isEmergencial) {
-      // enviar email aqui
-       await this.emailService.enviar({
-  para: dto.emailSolicitante,
-  assunto: 'Atendimento Emergencial',
-  template: 'emergencia',
-  variaveis: {
-    nome_cliente: dto.nomeSolicitante,
-    id_protocolo: numSolicitacao,
-    descricao_servico: dto.desSolicitacao,
-    nome_empresa: 'VCA Construtora',
-    local_unidade: '-',
-    data_criacao: new Date().toLocaleDateString('pt-BR'),
-    tipo_servico: 'Pós-Obra',
+     // Enviar email para qualquer atendimento
+try {
+  await this.emailService.enviar({
+    para: dto.emailSolicitante,
+    assunto: isEmergencial
+      ? 'Atendimento Emergencial'
+      : 'Solicitação registrada com sucesso',
+    template: 'emergencia',
+    variaveis: {
+      nome_cliente: dto.nomeSolicitante,
+      id_protocolo: numSolicitacao,
+      descricao_servico: dto.desSolicitacao,
+      nome_empresa: 'VCA Construtora',
+      local_unidade: '-',
+      data_criacao: new Date().toLocaleDateString('pt-BR'),
+      tipo_servico: 'Pós-Obra',
 
-    tag_urgente: isEmergencial
-      ? `
+      tag_urgente: isEmergencial
+        ? `
         <p>
           <span class="urgent-tag">Atendimento Urgente</span><br>
           <small style="color:#666;">
@@ -95,31 +97,37 @@ if (dto.subgrupoId) {
           </small>
         </p>
         `
-      : '',
-  },
-}).catch((err)=>{
-         console.error('ERRO AO ENVIAR EMAIL (IGNORADO) >>>', err);
-       });
+        : '',
+    },
+  });
 
-      return {
-        atendimentoId: atendimento.id,
-        idMobuss,
-        numSolicitacao,
-        emergencial: true,
-        podeAgendar: false,
-        mensagem:
-          'Chamado emergencial registrado. Nossa equipe entrará em contato.',
-      };
-    }
+  // Email interno
+if (isEmergencial) {
+  await this.emailService.enviar({
+    para: 'urgencia.posobra@vcaconstrutora.com.br',
+    assunto: `🚨 NOVO ATENDIMENTO EMERGENCIAL - ${numSolicitacao}`,
+    template: 'alerta-interno',
+    variaveis: {
+      nome_cliente: dto.nomeSolicitante,
+      protocolo: numSolicitacao,
+      descricao: dto.desSolicitacao,
+    },
+  });
+}
+} catch (err) {
+  console.error('ERRO AO ENVIAR EMAIL (IGNORADO) >>>', err);
+}
 
-      // 🔹 5. Fluxo normal
-    return {
-      atendimentoId: atendimento.id,
-      idMobuss,
-      numSolicitacao,
-      emergencial: isEmergencial,
-      podeAgendar: !isEmergencial,
-    };
+// Retorno único
+return {
+  atendimentoId: atendimento.id,
+  idMobuss,
+  numSolicitacao,
+  emergencial: isEmergencial,
+  podeAgendar: !isEmergencial,
+};  
+
+     
     } catch (error: any) {
       // Persistir erro (opcional)
       await this.prisma.atendimentoMobuss.create({
@@ -128,7 +136,7 @@ if (dto.subgrupoId) {
           numSolicitacao:null,
           status: 'ERRO',
 
-          // 🔑 CAMPOS OBRIGATÓRIOS
+          //  CAMPOS OBRIGATÓRIOS
          cpfCnpjCliente: dto.cpfCnpjCliente,
          nomeSolicitante: dto.nomeSolicitante,
          emailSolicitante: dto.emailSolicitante,
@@ -422,7 +430,7 @@ async anexarArquivo(
     idLegadoAnexo: `${atendimento.idMobuss}_${nomeSemExtensao}`,
     idMobussOrigem: atendimento.idMobuss,
     nomeAnexo: nomeSemExtensao,
-    ...formData.getHeaders(), // ✅ AGORA FUNCIONA
+    ...formData.getHeaders(), 
   };
 
   const response = await firstValueFrom(
