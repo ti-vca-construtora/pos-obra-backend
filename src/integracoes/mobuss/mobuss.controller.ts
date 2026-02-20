@@ -19,6 +19,7 @@ import {Public} from 'src/auth/decorators/public.decorator';
 import { ConsultarSolicitacoesClienteDto } from './dto/consultar-solicitacoes-cliente.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultarStatusAtendimentoDto } from './dto/consultar-status-atendimento.dto';
+import { CancelarVisitaDto } from './dto/cancelar-visita.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('integracoes/mobuss')
@@ -90,6 +91,20 @@ anexarArquivo(
   @UploadedFile() file: Express.Multer.File,
 ) {
   return this.service.anexarArquivo(atendimentoId, file);
+}
+
+@Public()
+@Get('obras')
+consultarObras() {
+  return this.service.consultarObras();
+}
+
+@Public()
+@Post('visita/cancelar')
+cancelarVisita(
+  @Body() dto: CancelarVisitaDto,
+) {
+  return this.service.cancelarVisita(dto.idVisita);
 }
 
 

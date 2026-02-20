@@ -6,6 +6,8 @@ import { RegisterDto } from './dto/register.dto';
 import {Roles} from './decorators/roles.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { ConfirmPasswordResetDto } from './dto/confirm-password-reset.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 
 
 @Controller('auth')
@@ -48,5 +50,24 @@ register(@Body() dto:RegisterDto){
       user: req.user,
     };
   }
+
+
+  @Post('password-reset/request')
+requestReset(
+  @Body() dto: RequestPasswordResetDto,
+) {
+  return this.authService.requestPasswordReset(dto.email);
+}
+
+@Post('password-reset/confirm')
+confirmReset(
+  @Body() dto: ConfirmPasswordResetDto,
+) {
+  return this.authService.confirmPasswordReset(
+    dto.email,
+    dto.token,
+    dto.novaSenha,
+  );
+}
 
 }

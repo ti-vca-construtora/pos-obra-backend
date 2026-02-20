@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-01-29T15:54:30.082Z",
+  "generatedAt": "2026-02-20T14:09:22.896Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -2836,6 +2836,545 @@
                   "dataAbertura": "2026-01-12T12:30:00.000Z",
                   "obra": "Conde Residence I",
                   "unidade": "00.Q4.C4 - Q04.Casa 04"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1771593995407_66rgwji3x",
+      "name": "Consultar obras",
+      "method": "GET",
+      "path": "/integracoes/mobuss/obras",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {PUBLIC_TOKEN}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "obras": [
+            {
+              "id": "TECLOGICA_25354",
+              "nome": "BEM RESIDENCIAL"
+            },
+            {
+              "id": "TECLOGICA_16254",
+              "nome": "CAMPUS VIVANT"
+            },
+            {
+              "id": "TECLOGICA_12950",
+              "nome": "Conde Guanambi"
+            },
+            {
+              "id": "TECLOGICA_13002",
+              "nome": "Conde Residence I"
+            },
+            {
+              "id": "TECLOGICA_13673",
+              "nome": "Conde Residence II"
+            },
+            {
+              "id": "TECLOGICA_13770",
+              "nome": "Conde Residence III"
+            },
+            {
+              "id": "TECLOGICA_14311",
+              "nome": "Dona Gilenilda"
+            },
+            {
+              "id": "TECLOGICA_24788",
+              "nome": "DONA MIRAÍ"
+            },
+            {
+              "id": "TECLOGICA_13003",
+              "nome": "Dona Olivia Boulevard"
+            },
+            {
+              "id": "TECLOGICA_14856",
+              "nome": "DONA OLIVIA RESIDENCIAL"
+            },
+            {
+              "id": "TECLOGICA_24149",
+              "nome": "DONA OLÍVIA UNIVERSIDADE"
+            },
+            {
+              "id": "TECLOGICA_10475",
+              "nome": "Don Boa Vista "
+            },
+            {
+              "id": "TECLOGICA_16908",
+              "nome": "Don J. Pedral"
+            },
+            {
+              "id": "TECLOGICA_14375",
+              "nome": "DON RESIDENCIAL"
+            },
+            {
+              "id": "TECLOGICA_24382",
+              "nome": "DUQUE DU L´EST"
+            },
+            {
+              "id": "TECLOGICA_9979",
+              "nome": "Duque Residence"
+            },
+            {
+              "id": "TECLOGICA_14888",
+              "nome": "Lord Residence"
+            },
+            {
+              "id": "TECLOGICA_54309",
+              "nome": "TOP RESIDENCIAL GUANAMBI"
+            },
+            {
+              "id": "TECLOGICA_14178",
+              "nome": "Treinamento/Teste (Dona Gilenilda)"
+            },
+            {
+              "id": "TECLOGICA_13284",
+              "nome": " VCA Matriz"
+            },
+            {
+              "id": "TECLOGICA_13158",
+              "nome": "Vila do Marquês"
+            }
+          ]
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-20T13:26:35.407Z",
+      "updatedAt": "2026-02-20T13:26:35.408Z",
+      "openapi": {
+        "id": "endpoint_1771593995407_66rgwji3x",
+        "method": "GET",
+        "path": "/integracoes/mobuss/obras",
+        "summary": "Consultar obras",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {PUBLIC_TOKEN}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "obras": [
+                    {
+                      "id": "TECLOGICA_25354",
+                      "nome": "BEM RESIDENCIAL"
+                    },
+                    {
+                      "id": "TECLOGICA_16254",
+                      "nome": "CAMPUS VIVANT"
+                    },
+                    {
+                      "id": "TECLOGICA_12950",
+                      "nome": "Conde Guanambi"
+                    },
+                    {
+                      "id": "TECLOGICA_13002",
+                      "nome": "Conde Residence I"
+                    },
+                    {
+                      "id": "TECLOGICA_13673",
+                      "nome": "Conde Residence II"
+                    },
+                    {
+                      "id": "TECLOGICA_13770",
+                      "nome": "Conde Residence III"
+                    },
+                    {
+                      "id": "TECLOGICA_14311",
+                      "nome": "Dona Gilenilda"
+                    },
+                    {
+                      "id": "TECLOGICA_24788",
+                      "nome": "DONA MIRAÍ"
+                    },
+                    {
+                      "id": "TECLOGICA_13003",
+                      "nome": "Dona Olivia Boulevard"
+                    },
+                    {
+                      "id": "TECLOGICA_14856",
+                      "nome": "DONA OLIVIA RESIDENCIAL"
+                    },
+                    {
+                      "id": "TECLOGICA_24149",
+                      "nome": "DONA OLÍVIA UNIVERSIDADE"
+                    },
+                    {
+                      "id": "TECLOGICA_10475",
+                      "nome": "Don Boa Vista "
+                    },
+                    {
+                      "id": "TECLOGICA_16908",
+                      "nome": "Don J. Pedral"
+                    },
+                    {
+                      "id": "TECLOGICA_14375",
+                      "nome": "DON RESIDENCIAL"
+                    },
+                    {
+                      "id": "TECLOGICA_24382",
+                      "nome": "DUQUE DU L´EST"
+                    },
+                    {
+                      "id": "TECLOGICA_9979",
+                      "nome": "Duque Residence"
+                    },
+                    {
+                      "id": "TECLOGICA_14888",
+                      "nome": "Lord Residence"
+                    },
+                    {
+                      "id": "TECLOGICA_54309",
+                      "nome": "TOP RESIDENCIAL GUANAMBI"
+                    },
+                    {
+                      "id": "TECLOGICA_14178",
+                      "nome": "Treinamento/Teste (Dona Gilenilda)"
+                    },
+                    {
+                      "id": "TECLOGICA_13284",
+                      "nome": " VCA Matriz"
+                    },
+                    {
+                      "id": "TECLOGICA_13158",
+                      "nome": "Vila do Marquês"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1771594079053_gju9izl30",
+      "name": "Cancelar visita",
+      "method": "POST",
+      "path": "/integracoes/mobuss/visita/cancelar",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {public_token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "idVisita",
+          "type": "string",
+          "required": true,
+          "example": "TECLOGICA_123",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "mensagem": "Visita cancelada com sucesso"
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-20T13:27:59.053Z",
+      "updatedAt": "2026-02-20T13:27:59.053Z",
+      "openapi": {
+        "id": "endpoint_1771594079053_gju9izl30",
+        "method": "POST",
+        "path": "/integracoes/mobuss/visita/cancelar",
+        "summary": "Cancelar visita",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {public_token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "idVisita"
+            ],
+            "properties": {
+              "idVisita": {
+                "type": "string",
+                "description": "",
+                "example": "TECLOGICA_123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Visita cancelada com sucesso"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1771596315981_hm0y0ys20",
+      "name": "Solicitar recuperaçao",
+      "method": "POST",
+      "path": "/auth/password-reset/request",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {public_token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "example": "admin@teste.com",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "message": "Código enviado"
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-20T14:05:15.981Z",
+      "updatedAt": "2026-02-20T14:05:15.981Z",
+      "openapi": {
+        "id": "endpoint_1771596315981_hm0y0ys20",
+        "method": "POST",
+        "path": "/auth/password-reset/request",
+        "summary": "Solicitar recuperaçao",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {public_token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "email"
+            ],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "",
+                "example": "admin@teste.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Código enviado"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1771596415030_uteyfix46",
+      "name": "Confirmar password reset",
+      "method": "POST",
+      "path": "/auth/password-reset/confirm",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "example": "novoemail@teste.com",
+          "description": ""
+        },
+        {
+          "name": "token",
+          "type": "string",
+          "required": true,
+          "example": "A7@K2P",
+          "description": ""
+        },
+        {
+          "name": "novaSenha",
+          "type": "string",
+          "required": true,
+          "example": "123456",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "message": "Senha alterada com sucesso"
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-20T14:06:55.030Z",
+      "updatedAt": "2026-02-20T14:06:55.030Z",
+      "openapi": {
+        "id": "endpoint_1771596415030_uteyfix46",
+        "method": "POST",
+        "path": "/auth/password-reset/confirm",
+        "summary": "Confirmar password reset",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "email",
+              "token",
+              "novaSenha"
+            ],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "",
+                "example": "novoemail@teste.com"
+              },
+              "token": {
+                "type": "string",
+                "description": "",
+                "example": "A7@K2P"
+              },
+              "novaSenha": {
+                "type": "string",
+                "description": "",
+                "example": "123456"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Senha alterada com sucesso"
                 }
               }
             }

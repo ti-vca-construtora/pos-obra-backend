@@ -115,3 +115,19 @@ model AgendamentoMobuss {
 
   @@map("agendamentomobuss")
 }
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+
+  email     String
+  token     String
+
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([token])
+  @@map("password_reset")
+}

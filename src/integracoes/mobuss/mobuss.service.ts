@@ -444,6 +444,64 @@ async anexarArquivo(
   return response.data;
 }
 
+async consultarObras() {
+
+  const response = await firstValueFrom(
+    this.http.post(
+      `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/consultarObrasEmpresa`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+        },
+      },
+    ),
+  );
+
+
+  return response.data;
+
+}
+
+async cancelarVisita(idVisita: string) {
+
+  try {
+
+    const payload = {
+      idVisita,
+    };
+
+    const response = await firstValueFrom(
+      this.http.post(
+        `${this.baseUrl}/ccapi/assistencia/solicitacao/v1/cancelarAgendamentoVisitaSolicitacao`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MOBUSS_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      ),
+    );
+
+    return response.data;
+
+  } catch (error: any) {
+
+    console.error('ERRO MOBUSS CANCELAR VISITA >>>', {
+      payload: { idVisita },
+      status: error?.response?.status,
+      data: error?.response?.data,
+    });
+
+    throw new InternalServerErrorException(
+      error?.response?.data || 'Erro ao cancelar visita',
+    );
+
+  }
+
+}
+
 
 
 }
