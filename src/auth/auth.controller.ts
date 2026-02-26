@@ -2,6 +2,7 @@ import { Body, Controller,Get, Post, Req,UnauthorizedException,UseGuards, Header
 import { AuthService } from './auth.service';
 import {Public} from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
+import { LoginCpfDto } from './dto/login-cpf.dto';
 import { RegisterDto } from './dto/register.dto';
 import {Roles} from './decorators/roles.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -18,6 +19,12 @@ export class AuthController {
   @Post('login')
   login(@Body() dto:LoginDto) {
     return this.authService.login(dto.email, dto.password);
+  }
+
+  @Public()
+  @Post('login-cpf')
+  loginByCpf(@Body() dto: LoginCpfDto) {
+    return this.authService.loginByCpf(dto.cpf, dto.birthDate);
   }
 
 
@@ -69,5 +76,13 @@ confirmReset(
     dto.novaSenha,
   );
 }
+
+
+@Public()
+@Post('check-cpf')
+async checkCpf(@Body('cpf') cpf: string) {
+  return this.authService.checkCpfAndCreate(cpf);
+}
+
 
 }

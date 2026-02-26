@@ -21,6 +21,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ConsultarStatusAtendimentoDto } from './dto/consultar-status-atendimento.dto';
 import { CancelarVisitaDto } from './dto/cancelar-visita.dto';
 
+import { Put } from '@nestjs/common';
+import { UpdateManualDto } from './dto/update-manual.dto';
+
 @UseGuards(JwtAuthGuard)
 @Controller('integracoes/mobuss')
 export class MobussController {
@@ -105,6 +108,35 @@ cancelarVisita(
   @Body() dto: CancelarVisitaDto,
 ) {
   return this.service.cancelarVisita(dto.idVisita);
+}
+
+@Public()
+@Post('sincronizar-obras')
+sincronizarObras() {
+  return this.service.sincronizarObras();
+}
+
+// LISTAR TODOS
+@Public()
+@Get('empreendimentos')
+listarEmpreendimentos() {
+
+  return this.service.listarEmpreendimentos();
+
+}
+
+// ATUALIZAR MANUAL
+@Public()
+@Put('empreendimentos/:id/manual')
+atualizarManual(
+
+  @Param('id') id: string,
+  @Body() dto: UpdateManualDto,
+
+) {
+
+  return this.service.atualizarManual(id, dto);
+
 }
 
 

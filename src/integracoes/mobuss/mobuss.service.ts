@@ -11,6 +11,7 @@ import { addDays, startOfDay } from 'date-fns';
 import { fromZonedTime } from 'date-fns-tz';
 
 import FormData from 'form-data';
+import { UpdateManualDto } from './dto/update-manual.dto';
 
 @Injectable()
 export class MobussService {
@@ -463,7 +464,42 @@ async consultarObras() {
 
 }
 
+
 async cancelarVisita(idVisita: string) {
+
+
+   // 1. buscar no banco
+    const agendamento =
+    await this.prisma.agendamentoMobuss.findUnique({
+      where: { idVisita }
+    });
+
+
+  if (!agendamento) {
+    throw new NotFoundException(
+      'Agendamento não encontrado'
+    );
+  }
+
+  // 2. calcular diferença
+  const agora = new Date();
+
+  const dataVisita =
+    new Date(agendamento.dataInicio);
+
+  const diferencaMs =
+    dataVisita.getTime() - agora.getTime();
+
+  const diferencaHoras =
+    diferencaMs / (1000 * 60 * 60);
+
+    // 3. validar regra
+
+  if (diferencaHoras <= 24) {
+    throw new BadRequestException(
+      'A visita não pode ser cancelada com menos de 24 horas de antecedência'
+    );
+  }
 
   try {
 
@@ -484,7 +520,20 @@ async cancelarVisita(idVisita: string) {
       ),
     );
 
-    return response.data;
+    // 5. atualizar status local
+    await this.prisma.atendimentoMobuss.update({
+      where: {
+        id: agendamento.atendimentoId
+      },
+      data: {
+        status: 'CANCELADO'
+      }
+    });
+
+     return {
+      message: 'Visita cancelada com sucesso',
+      ...response.data
+    };
 
   } catch (error: any) {
 
@@ -497,9 +546,96 @@ async cancelarVisita(idVisita: string) {
     throw new InternalServerErrorException(
       error?.response?.data || 'Erro ao cancelar visita',
     );
+  }
+}
 
+
+async sincronizarObras() {
+
+  // 1. busca na mobuss
+  const response = await this.consultarObras();
+
+  const obras = response.obras ?? [];
+
+  let criados = 0;
+  let existentes = 0;
+
+  for (const obra of obras) {
+
+    const existe = await this.prisma.empreendimentoMobuss.findUnique({
+      where: {
+        idMobuss: obra.id
+      }
+    });
+
+    if (!existe) {
+
+      await this.prisma.empreendimentoMobuss.create({
+        data: {
+          idMobuss: obra.id,
+          nome: obra.nome
+        }
+      });
+
+      criados++;
+
+    } else {
+
+      existentes++;
+
+      // opcional atualizar nome
+      if (existe.nome !== obra.nome) {
+
+        await this.prisma.empreendimentoMobuss.update({
+          where: {
+            id: existe.id
+          },
+          data: {
+            nome: obra.nome
+          }
+        });
+      }
+    }
   }
 
+  return {
+    totalMobuss: obras.length,
+    criados,
+    existentes
+  };
+}
+
+async listarEmpreendimentos() {
+  return this.prisma.empreendimentoMobuss.findMany({
+    orderBy: {
+      nome: 'asc'
+    }
+  });
+}
+
+async atualizarManual(
+  id: string,
+  dto: UpdateManualDto
+) {
+
+  const empreendimento =
+    await this.prisma.empreendimentoMobuss.findUnique({
+      where: { id }
+    });
+
+  if (!empreendimento) {
+    throw new NotFoundException(
+      'Empreendimento não encontrado'
+    );
+  }
+
+
+  return this.prisma.empreendimentoMobuss.update({
+    where: { id },
+    data: {
+      manualUrl: dto.manualUrl
+    }
+  });
 }
 
 

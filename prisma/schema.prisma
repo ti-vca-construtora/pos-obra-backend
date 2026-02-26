@@ -12,6 +12,8 @@ model Usuario {
   email     String   @unique
   password  String
   nome      String?
+  cpf       String?  @unique
+  birthDate String?
   role      String   @default("ADMIN")
   active    Boolean  @default(true)
 
@@ -130,4 +132,56 @@ model PasswordReset {
   @@index([email])
   @@index([token])
   @@map("password_reset")
+}
+
+model EmpreendimentoMobuss {
+  id           String   @id @default(uuid())
+
+  idMobuss     String   @unique
+  nome         String
+
+  manualUrl    String?  // link do manual (opcional)
+
+  ativo        Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([idMobuss])
+  @@map("empreendimentomobuss")
+}
+
+model TermoSite {
+
+  id        Int      @id @default(1)
+
+  conteudo  String   @db.LongText
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("termosite")
+
+}
+
+model AvisoSite {
+
+  id          String   @id @default(uuid())
+
+  titulo      String
+  descricao   String   @db.LongText
+
+  ativo       Boolean  @default(false)
+
+  dataInicio  DateTime
+  dataFim     DateTime
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([ativo])
+  @@index([dataInicio, dataFim])
+
+  @@map("avisosite")
+
 }

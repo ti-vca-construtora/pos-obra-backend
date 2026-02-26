@@ -4,13 +4,12 @@ import {
  UnauthorizedException,
 } from "@nestjs/common";
 
-import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma/prisma.service";
-import { EmailService } from 'src/email/email.service';
-
 import * as bcrypt from 'bcrypt';
 
 import { RegisterDto } from "./dto/register.dto";
+import { PrismaService } from "src/prisma/prisma.service";
+import { JwtService } from "@nestjs/jwt";
+import { EmailService } from "src/email/email.service";
 
 @Injectable()
 export class AuthService {
@@ -36,6 +35,7 @@ private gerarToken(payload: any) {
  return this.jwtService.sign(payload, { expiresIn: '7d' });
 
 }
+
 
 generatePublicToken() {
 
@@ -283,6 +283,181 @@ async confirmPasswordReset(
 
  };
 
+}
+// LOGIN via CPF + birthDate
+async loginByCpf(cpf: string, birthDate: string) {
+
+  const cleanCpf = cpf.replace(/\D/g, '');
+
+  // try local DB first
+  const user = await this.prisma.usuario.findFirst({
+    where: { cpf: cleanCpf },
+  });
+
+  if (user) {
+    if (!user.active) throw new UnauthorizedException();
+    // compare birthDate stored (string) with provided
+    if (!user.birthDate || user.birthDate !== birthDate) {
+      throw new UnauthorizedException();
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      access_token: this.gerarToken(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        nome: user.nome,
+        role: user.role,
+      },
+    };
+  }
+
+  // not found locally -> query external API
+ const apiUrl = 'https://api.sienge.com.br';
+ const apiToken = 'dmNhLXRlY2g6OHc3V0tIRDZpOEExNWpGY1RqN2xkR0JIZ3pzWWdsVTU=';
+
+
+  if (!apiUrl || !apiToken) {
+    throw new BadRequestException('API externa não configurada');
+  }
+
+  // attempt fetch
+  const url = `${apiUrl.replace(/\/$/, '')}/vca/public/api/v1/customers?cpf=${cleanCpf}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: `Basic ${apiToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new BadRequestException('Erro ao consultar API externa');
+  }
+
+  const data = await res.json();
+
+  const result = data?.results?.[0];
+
+  if (!result) {
+    throw new UnauthorizedException();
+  }
+
+  // normalize API birthDate to YYYY-MM-DD if needed
+  let apiBirth = result.birthDate;
+  if (apiBirth && apiBirth.indexOf('T') !== -1) {
+    apiBirth = apiBirth.split('T')[0];
+  }
+
+  if (result.cpf !== cleanCpf || apiBirth !== birthDate) {
+    throw new UnauthorizedException();
+  }
+
+  // create local user record (first access)
+  const randomPass = Math.random().toString(36).slice(2);
+  const hashed = await bcrypt.hash(randomPass, 10);
+
+  // ensure unique email placeholder
+  let email = `${cleanCpf}@autocreate.local`;
+  let suffix = 0;
+  while (await this.prisma.usuario.findUnique({ where: { email } })) {
+    suffix++;
+    email = `${cleanCpf}+${suffix}@autocreate.local`;
+  }
+
+  const newUser = await this.prisma.usuario.create({
+    data: {
+      email,
+      password: hashed,
+      nome: result.name ?? null,
+      cpf: cleanCpf,
+      birthDate: apiBirth,
+      role: 'USER',
+      active: true,
+    },
+  });
+
+  const payload = {
+    sub: newUser.id,
+    email: newUser.email,
+    role: newUser.role,
+  };
+
+  return {
+    access_token: this.gerarToken(payload),
+    user: {
+      id: newUser.id,
+      email: newUser.email,
+      nome: newUser.nome,
+      role: newUser.role,
+    },
+  };
+
+}
+
+
+async checkCpfAndCreate(cpf: string) {
+ const cleanCpf = cpf.replace(/\D/g, '');
+
+ let user = await this.prisma.usuario.findUnique({
+   where: {
+     email: cleanCpf
+   }
+ });
+
+ if (user) {
+   return {
+     exists: true
+   };
+ }
+
+ // consulta API externa
+ const apiUrl = 'https://api.sienge.com.br';
+ const apiToken = 'dmNhLXRlY2g6OHc3V0tIRDZpOEExNWpGY1RqN2xkR0JIZ3pzWWdsVTU=';
+ const url = `${apiUrl}/vca/public/api/v1/customers?cpf=${cleanCpf}`;
+
+ const res = await fetch(url, {
+   headers: {
+     Authorization: `Basic ${apiToken}`
+   }
+ });
+
+ const data = await res.json();
+ const result = data.results[0];
+ console.log(result);
+ if (!result)
+   throw new UnauthorizedException();
+
+ let birthDate = result.birthDate;
+
+ if (birthDate.includes('T'))
+   birthDate = birthDate.split('T')[0];
+
+ const hashedPassword = await bcrypt.hash(birthDate, 10);
+
+ user = await this.prisma.usuario.create({
+   data: {
+     email: cleanCpf,
+     password: hashedPassword,
+     nome: result.name,
+     cpf: cleanCpf,
+     birthDate,
+     role: 'USER',
+     active: true
+   }
+ });
+
+
+ return {
+   exists: false
+ };
 }
 
 

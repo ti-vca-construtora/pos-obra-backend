@@ -2,7 +2,7 @@
   "name": "API Documentation",
   "version": "1.0.0",
   "baseUrl": "https://api.example.com",
-  "generatedAt": "2026-02-20T14:09:22.896Z",
+  "generatedAt": "2026-02-26T12:40:58.843Z",
   "endpoints": [
     {
       "id": "endpoint_1768994364205_lljwe9568",
@@ -3376,6 +3376,744 @@
                 "example": {
                   "message": "Senha alterada com sucesso"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772107483171_qkb3jdijv",
+      "name": "Primeiro acesso",
+      "method": "POST",
+      "path": "/auth/check-cpf",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "cpf",
+          "type": "string",
+          "required": true,
+          "example": "99988877745",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "Se primeiro acesso e n tiver no banco retorna false se o usuario ja foi inserido retorna true",
+        "example": {
+          "exists": false
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:04:43.172Z",
+      "updatedAt": "2026-02-26T12:04:43.173Z",
+      "openapi": {
+        "id": "endpoint_1772107483171_qkb3jdijv",
+        "method": "POST",
+        "path": "/auth/check-cpf",
+        "summary": "Primeiro acesso",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "cpf"
+            ],
+            "properties": {
+              "cpf": {
+                "type": "string",
+                "description": "",
+                "example": "99988877745"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Se primeiro acesso e n tiver no banco retorna false se o usuario ja foi inserido retorna true",
+            "content": {
+              "application/json": {
+                "example": {
+                  "exists": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772107689868_wbjg5ry7a",
+      "name": "Sincronizar obras",
+      "method": "POST",
+      "path": "/integracoes/mobuss/sincronizar-obras",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {token}",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "atualizar todas as obras  novas",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:08:09.868Z",
+      "updatedAt": "2026-02-26T12:08:09.868Z",
+      "openapi": {
+        "id": "endpoint_1772107689868_wbjg5ry7a",
+        "method": "POST",
+        "path": "/integracoes/mobuss/sincronizar-obras",
+        "summary": "Sincronizar obras",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {token}",
+              "required": true,
+              "description": ""
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "atualizar todas as obras  novas",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772107731276_jt057ah55",
+      "name": "Listar todos os empreendimentos",
+      "method": "GET",
+      "path": "/integracoes/mobuss/empreendimentos",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "id": "uuid",
+          "idMobuss": "TECLOGICA_25354",
+          "nome": "BEM RESIDENCIAL",
+          "manualUrl": null,
+          "createdAt": "...",
+          "updatedAt": "..."
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:08:51.277Z",
+      "updatedAt": "2026-02-26T12:08:51.277Z",
+      "openapi": {
+        "id": "endpoint_1772107731276_jt057ah55",
+        "method": "GET",
+        "path": "/integracoes/mobuss/empreendimentos",
+        "summary": "Listar todos os empreendimentos",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "uuid",
+                  "idMobuss": "TECLOGICA_25354",
+                  "nome": "BEM RESIDENCIAL",
+                  "manualUrl": null,
+                  "createdAt": "...",
+                  "updatedAt": "..."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772107909709_k1ngdyvny",
+      "name": "Atualizar manual",
+      "method": "PUT",
+      "path": "/integracoes/mobuss/empreendimentos/uuid/manual",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "\"manualUrl\":",
+          "type": "string",
+          "required": true,
+          "example": "\"https://site.com/manual.pdf\"",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {
+          "id": "uuid",
+          "idMobuss": "TECLOGICA_25354",
+          "nome": "BEM RESIDENCIAL",
+          "manualUrl": "https://site.com/manual.pdf"
+        }
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:11:49.710Z",
+      "updatedAt": "2026-02-26T12:11:49.710Z",
+      "openapi": {
+        "id": "endpoint_1772107909709_k1ngdyvny",
+        "method": "PUT",
+        "path": "/integracoes/mobuss/empreendimentos/uuid/manual",
+        "summary": "Atualizar manual",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "\"manualUrl\":"
+            ],
+            "properties": {
+              "\"manualUrl\":": {
+                "type": "string",
+                "description": "",
+                "example": "\"https://site.com/manual.pdf\""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "uuid",
+                  "idMobuss": "TECLOGICA_25354",
+                  "nome": "BEM RESIDENCIAL",
+                  "manualUrl": "https://site.com/manual.pdf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109330652_2jckf8q24",
+      "name": "Atualizar termo",
+      "method": "PUT",
+      "path": "/site/termo",
+      "description": "",
+      "category": "General",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {token}",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "conteudo",
+          "type": "string",
+          "required": true,
+          "example": "texto do termo aqui",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:35:30.653Z",
+      "updatedAt": "2026-02-26T12:37:05.489Z",
+      "openapi": {
+        "id": "endpoint_1772109330652_2jckf8q24",
+        "method": "PUT",
+        "path": "/site/termo",
+        "summary": "Atualizar termo",
+        "description": "",
+        "request": {
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {token}",
+              "required": true,
+              "description": ""
+            }
+          ],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "conteudo"
+            ],
+            "properties": {
+              "conteudo": {
+                "type": "string",
+                "description": "",
+                "example": "texto do termo aqui"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109444135_6kjq1qrv5",
+      "name": "Listar termos",
+      "method": "GET",
+      "path": "/site/termo",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:37:24.135Z",
+      "updatedAt": "2026-02-26T12:37:24.135Z",
+      "openapi": {
+        "id": "endpoint_1772109444135_6kjq1qrv5",
+        "method": "GET",
+        "path": "/site/termo",
+        "summary": "Listar termos",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109539717_t856daf6w",
+      "name": "Criar aviso",
+      "method": "POST",
+      "path": "/site/avisos",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [
+        {
+          "name": "titulo",
+          "type": "string",
+          "required": true,
+          "example": "manutenção",
+          "description": ""
+        },
+        {
+          "name": "descricao",
+          "type": "string",
+          "required": true,
+          "example": "sistema em manutenção",
+          "description": ""
+        },
+        {
+          "name": "ativo",
+          "type": "boolean",
+          "required": true,
+          "example": "true/false",
+          "description": ""
+        },
+        {
+          "name": "dataInicio",
+          "type": "string",
+          "required": true,
+          "example": "2026-02-12T15:00:00",
+          "description": ""
+        },
+        {
+          "name": "dataFim",
+          "type": "string",
+          "required": true,
+          "example": "2026-02-15T18:00:00",
+          "description": ""
+        }
+      ],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:38:59.717Z",
+      "updatedAt": "2026-02-26T12:38:59.717Z",
+      "openapi": {
+        "id": "endpoint_1772109539717_t856daf6w",
+        "method": "POST",
+        "path": "/site/avisos",
+        "summary": "Criar aviso",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "required": [
+              "titulo",
+              "descricao",
+              "ativo",
+              "dataInicio",
+              "dataFim"
+            ],
+            "properties": {
+              "titulo": {
+                "type": "string",
+                "description": "",
+                "example": "manutenção"
+              },
+              "descricao": {
+                "type": "string",
+                "description": "",
+                "example": "sistema em manutenção"
+              },
+              "ativo": {
+                "type": "boolean",
+                "description": "",
+                "example": "true/false"
+              },
+              "dataInicio": {
+                "type": "string",
+                "description": "",
+                "example": "2026-02-12T15:00:00"
+              },
+              "dataFim": {
+                "type": "string",
+                "description": "",
+                "example": "2026-02-15T18:00:00"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109567727_87ojoa8fr",
+      "name": "Listar avisos",
+      "method": "GET",
+      "path": "/site/avisos",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:39:27.727Z",
+      "updatedAt": "2026-02-26T12:39:27.727Z",
+      "openapi": {
+        "id": "endpoint_1772109567727_87ojoa8fr",
+        "method": "GET",
+        "path": "/site/avisos",
+        "summary": "Listar avisos",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109617783_e9aomeqje",
+      "name": "Atualizar aviso",
+      "method": "PUT",
+      "path": "/site/avisos/{id}",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:40:17.783Z",
+      "updatedAt": "2026-02-26T12:40:17.783Z",
+      "openapi": {
+        "id": "endpoint_1772109617783_e9aomeqje",
+        "method": "PUT",
+        "path": "/site/avisos/{id}",
+        "summary": "Atualizar aviso",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "endpoint_1772109646553_wosgj0w8u",
+      "name": "Consultar aviso ativo",
+      "method": "GET",
+      "path": "/site/avisos/ativo",
+      "description": "",
+      "category": "General",
+      "headers": [],
+      "queryParams": [],
+      "bodyParams": [],
+      "response": {
+        "code": 200,
+        "contentType": "application/json",
+        "description": "",
+        "example": {}
+      },
+      "errorResponses": [
+        {
+          "code": 400,
+          "description": "",
+          "example": {
+            "success": false,
+            "error": "ErrorType",
+            "message": "Error description"
+          }
+        }
+      ],
+      "createdAt": "2026-02-26T12:40:46.553Z",
+      "updatedAt": "2026-02-26T12:40:46.554Z",
+      "openapi": {
+        "id": "endpoint_1772109646553_wosgj0w8u",
+        "method": "GET",
+        "path": "/site/avisos/ativo",
+        "summary": "Consultar aviso ativo",
+        "description": "",
+        "request": {
+          "headers": [],
+          "query": [],
+          "body": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {}
               }
             }
           }
