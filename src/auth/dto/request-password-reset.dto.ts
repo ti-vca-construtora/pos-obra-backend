@@ -1,8 +1,11 @@
-import { IsEmail } from 'class-validator';
+import { Matches, IsString  } from 'class-validator';
 
 export class RequestPasswordResetDto {
 
-  @IsEmail()
-  email: string;
+  @IsString()
+  @Matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$|^\d{11}$/, {
+    message: 'Informe um email válido ou CPF com 11 dígitos',
+  })
+  identifier: string;
 
 }

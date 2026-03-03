@@ -17,6 +17,8 @@ model Usuario {
   role      String   @default("ADMIN")
   active    Boolean  @default(true)
 
+  resets    PasswordReset[]  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -121,7 +123,9 @@ model AgendamentoMobuss {
 model PasswordReset {
   id        String   @id @default(uuid())
 
-  email     String
+  userId    Int
+  user      Usuario  @relation(fields: [userId], references: [id])
+
   token     String
 
   expiresAt DateTime
@@ -129,7 +133,7 @@ model PasswordReset {
 
   createdAt DateTime @default(now())
 
-  @@index([email])
+  @@index([userId])
   @@index([token])
   @@map("password_reset")
 }

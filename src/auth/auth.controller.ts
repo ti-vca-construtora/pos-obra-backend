@@ -59,19 +59,16 @@ register(@Body() dto:RegisterDto){
   }
 
 
-  @Post('password-reset/request')
-requestReset(
-  @Body() dto: RequestPasswordResetDto,
-) {
-  return this.authService.requestPasswordReset(dto.email);
+@Post('password-reset/request')
+requestReset(@Body() dto: RequestPasswordResetDto) {
+  return this.authService.requestPasswordReset(dto.identifier);
 }
 
+
 @Post('password-reset/confirm')
-confirmReset(
-  @Body() dto: ConfirmPasswordResetDto,
-) {
+confirmReset(@Body() dto: ConfirmPasswordResetDto) {
   return this.authService.confirmPasswordReset(
-    dto.email,
+    dto.identifier,
     dto.token,
     dto.novaSenha,
   );

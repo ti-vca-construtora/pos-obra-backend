@@ -20,7 +20,6 @@ constructor(
  private emailService: EmailService,
 ) {}
 
-
 // JWT TOKEN
 private gerarToken(payload: any) {
 
@@ -163,127 +162,151 @@ async login(email: string, password: string) {
 
 }
 
-
+private isCpf(value: string): boolean {
+  const clean = value.replace(/\D/g, '');
+  return clean.length === 11;
+}
 
 // REQUEST RESET
-async requestPasswordReset(email: string) {
+async requestPasswordReset(identifier: string) {
 
- const usuario = await this.prisma.usuario.findUnique({
+  let user;
+  let emailToSend: string | null = null;
 
-   where: { email },
+  const isCpf = this.isCpf(identifier);
 
- });
+  if (isCpf) {
+  const cleanCpf = identifier.replace(/\D/g, '');
 
- if (!usuario) {
+  user = await this.prisma.usuario.findFirst({
+    where: { cpf: cleanCpf }
+  });
 
-   return {
+  if (!user) {
+    return { message: 'Se o usuário existir, você receberá as instruções.' };
+  }
 
-     message:
-       'Se o email existir, você receberá as instruções.',
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-   };
+  if (user.email && isValidEmail(user.email) && !user.email.includes('@autocreate.local')) {
+    emailToSend = user.email;
+  } else {
 
- }
+    const formattedCpf = cleanCpf.replace(
+      /(\d{3})(\d{3})(\d{3})(\d{2})/,
+      '$1.$2.$3-$4'
+    );
+    
+    const baseUrl = process.env.MOBUSS_INTERNAL_URL;
+    const response = await fetch(
+  `${baseUrl}/integracoes/mobuss/cliente`,
+  {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cpfCnpj: formattedCpf }),
+  },
+);
+    if (!response.ok) {
+      return { message: 'Se o usuário existir, você receberá as instruções.' };
+    }
 
- const token = this.gerarOtp();
+    const data = await response.json();
 
- const expiresAt =
-   new Date(Date.now() + 10 * 60 * 1000);
+    emailToSend = data?.email;
 
+    if (!emailToSend) {
+      return { message: 'Se o usuário existir, você receberá as instruções.' };
+    }
+  }
+}
 
- await this.prisma.passwordReset.create({
-   data: {
-     email,
-     token,
-     expiresAt,
-     used: false,
-   },
- });
- await this.emailService.enviar({
-   para: email,
-   assunto: 'Recuperação de senha',
-   template: 'password-reset',
-   variaveis: {
-     token,
-   },
- });
+  const token = this.gerarOtp();
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
- return {
-   message: 'Código enviado',
- };
+  await this.prisma.passwordReset.create({
+    data: {
+      userId: user.id,
+      token,
+      expiresAt,
+      used: false,
+    },
+  });
+
+  if (!emailToSend) {
+  return {
+    message: 'Se o usuário existir, você receberá as instruções.',
+  };
+}
+
+  await this.emailService.enviar({
+    para: emailToSend,
+    assunto: 'Recuperação de senha',
+    template: 'password-reset',
+    variaveis: { token },
+  });
+
+  return {
+    message: 'Se o usuário existir, você receberá as instruções.',
+  };
 }
 
 // CONFIRM RESET
 async confirmPasswordReset(
- email: string,
- token: string,
- novaSenha: string,
+  identifier: string,
+  token: string,
+  novaSenha: string,
 ) {
 
- const reset =
-   await this.prisma.passwordReset.findFirst({
+  const isCpf = this.isCpf(identifier);
 
-   where: {
+  let user;
 
-     email,
-     token,
-     used: false,
+  if (isCpf) {
+    const cleanCpf = identifier.replace(/\D/g, '');
+    user = await this.prisma.usuario.findFirst({
+      where: { cpf: cleanCpf }
+    });
+  } else {
+    user = await this.prisma.usuario.findUnique({
+      where: { email: identifier }
+    });
+  }
 
-     expiresAt: {
+  if (!user) {
+    throw new BadRequestException('Token inválido ou expirado');
+  }
 
-       gt: new Date(),
+  const reset = await this.prisma.passwordReset.findFirst({
+    where: {
+      userId: user.id,
+      token,
+      used: false,
+      expiresAt: { gt: new Date() },
+    },
+  });
 
-     },
+  if (!reset) {
+    throw new BadRequestException('Token inválido ou expirado');
+  }
 
-   },
+  const senhaHash = await bcrypt.hash(novaSenha, 10);
 
- });
+  await this.prisma.usuario.update({
+    where: { id: user.id },
+    data: { password: senhaHash },
+  });
 
- if (!reset) {
+  await this.prisma.passwordReset.update({
+    where: { id: reset.id },
+    data: { used: true },
+  });
 
-   throw new BadRequestException(
-     'Token inválido ou expirado',
-   );
-
- }
-
-
- const senhaHash =
-   await bcrypt.hash(novaSenha, 10);
-
-
- await this.prisma.usuario.update({
-
-   where: { email },
-
-   data: {
-
-     password: senhaHash,
-
-   },
-
- });
-
-
- await this.prisma.passwordReset.update({
-
-   where: { id: reset.id },
-
-   data: {
-
-     used: true,
-
-   },
-
- });
-
- return {
-
-   message: 'Senha alterada com sucesso',
-
- };
-
+  return {
+    message: 'Senha alterada com sucesso',
+  };
 }
+
 // LOGIN via CPF + birthDate
 async loginByCpf(cpf: string, birthDate: string) {
 
