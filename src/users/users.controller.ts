@@ -31,7 +31,7 @@ getProfile(){
 }
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN')
+@Roles('ADMIN', 'USER')
 @Patch(':id')
 update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
   return this.usersService.update(+id, dto);
