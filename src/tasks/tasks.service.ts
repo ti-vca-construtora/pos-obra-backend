@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { MobussService } from '../integracoes/mobuss/mobuss.service';
 import { EmailService } from 'src/email/email.service';
+import { HuggyService } from 'src/integracoes/huggy/huggy.service';
 
 @Injectable()
 export class TasksService {
@@ -12,89 +13,153 @@ export class TasksService {
     private readonly prisma: PrismaService,
     private readonly mobussService: MobussService,
     private readonly emailService: EmailService,
+    private readonly huggyService: HuggyService,
   ) {}
 
-  /**
-   * Executa a cada 4 horas
-   * Responsável por sincronizar a situação dos atendimentos
-   * com a API da Mobuss
-   */
- 
   @Cron('0 9,18 * * *', {
-  timeZone: 'America/Sao_Paulo',
-})
-async sincronizarAtendimentosMobuss(): Promise<void> {
-  this.logger.log('Início da sincronização Mobuss');
+    timeZone: 'America/Sao_Paulo',
+  })
+  async sincronizarAtendimentosMobuss(): Promise<void> {
 
-  const atendimentos = await this.prisma.atendimentoMobuss.findMany({
-    where: {
-      status: {
-        notIn: ['CONCLUIDO', 'CANCELADO'],
+    this.logger.log('Início da sincronização Mobuss');
+
+    const atendimentos = await this.prisma.atendimentoMobuss.findMany({
+      where: {
+        status: {
+          notIn: ['CONCLUIDO', 'CANCELADO'],
+        },
       },
-    },
-  });
+    });
 
-  for (const atendimento of atendimentos) {
-    try {
-      const resposta =
-        await this.mobussService.consultarSituacaoAtendimento(
-          atendimento.idMobuss, // 🔥 CORRIGIDO
-        );
+    for (const atendimento of atendimentos) {
 
-      const novaSituacao = resposta?.situacao;
-      const dataAgendamento = resposta?.dataAgendamento; // depende da API real
+      try {
 
-      // 1️⃣ Atualiza status se mudou
-      if (novaSituacao && novaSituacao !== atendimento.status) {
-        await this.prisma.atendimentoMobuss.update({
-          where: { id: atendimento.id },
-          data: {
-            status: novaSituacao,
-            payloadResposta: resposta,
-          },
-        });
+        const resposta =
+          await this.mobussService.consultarSituacaoAtendimento(
+            atendimento.idMobuss,
+          );
 
-        this.logger.log(
-          `Status atualizado: ${atendimento.id} → ${novaSituacao}`,
-        );
-      }
+        const novaSituacao = resposta?.situacao;
+        const dataAgendamento = resposta?.dataAgendamento;
 
-      // 2️⃣ Verificar se existe data
-      if (dataAgendamento) {
-        const data = new Date(dataAgendamento);
-        const hoje = new Date();
+        // Atualiza status
+        if (novaSituacao && novaSituacao !== atendimento.status) {
 
-        const diffMs = data.getTime() - hoje.getTime();
-        const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-        // ⚠️ Se vence em 1 dia
-        if (diffDias === 1 && atendimento.emailSolicitante) {
-          await this.emailService.enviar({
-            para: atendimento.emailSolicitante,
-            assunto: '⚠️ Seu atendimento vence amanhã',
-            template: 'alerta-vencimento',
-            variaveis: {
-              nome: atendimento.nomeSolicitante ?? '',
-              protocolo: resposta?.numSolicitacao ?? '',
-              data: data.toLocaleDateString('pt-BR'),
+          await this.prisma.atendimentoMobuss.update({
+            where: { id: atendimento.id },
+            data: {
+              status: novaSituacao,
+              payloadResposta: resposta,
             },
           });
 
           this.logger.log(
-            `Alerta enviado para atendimento ${atendimento.id}`,
+            `Status atualizado: ${atendimento.id} → ${novaSituacao}`,
           );
         }
+
+        // Verificar data de agendamento
+        if (dataAgendamento) {
+
+          const data = new Date(dataAgendamento);
+          const hoje = new Date();
+
+          const diffMs = data.getTime() - hoje.getTime();
+          const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+          // Se visita é amanhã
+          if (diffDias === 1 && atendimento.emailSolicitante) {
+
+            await this.emailService.enviar({
+              para: atendimento.emailSolicitante,
+              assunto: '⚠️ Seu atendimento vence amanhã',
+              template: 'alerta-vencimento',
+              variaveis: {
+                nome: atendimento.nomeSolicitante ?? '',
+                protocolo: resposta?.numSolicitacao ?? '',
+                data: data.toLocaleDateString('pt-BR'),
+              },
+            });
+
+            this.logger.log(
+              `Alerta enviado para atendimento ${atendimento.id}`,
+            );
+
+            // 🔥 ENVIO WHATSAPP
+            try {
+
+              const cliente =
+                await this.mobussService.consultarCliente(
+                  atendimento.cpfCnpjCliente,
+                );
+
+              const telefone =
+                cliente?.telefone || cliente?.celular;
+
+              if (!telefone) {
+
+                this.logger.warn(
+                  `Cliente sem telefone ${atendimento.id}`,
+                );
+
+                continue;
+              }
+
+              const phone = telefone.replace(/\D/g, '');
+
+              let contato =
+                await this.huggyService.buscarContatoPorTelefone(
+                  phone,
+                );
+
+              if (!contato) {
+
+               contato = await this.huggyService.criarContato(
+  atendimento.nomeSolicitante ?? 'Cliente',
+  phone,
+);
+              }
+
+              await this.huggyService.executarFlow(
+                contato.id,
+                {
+                  nomecliente: atendimento.nomeSolicitante,
+                  datavisita: data.toLocaleDateString('pt-BR'),
+                  horariovisita: data.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  }),
+                  local: resposta?.local ?? 'Seu empreendimento',
+                },
+              );
+
+              this.logger.log(
+                `WhatsApp enviado ${atendimento.id}`,
+              );
+
+            } catch (err) {
+
+              this.logger.error(
+                `Erro envio WhatsApp atendimento ${atendimento.id}`,
+                err,
+              );
+
+            }
+
+          }
+        }
+
+      } catch (error) {
+
+        this.logger.error(
+          `Erro ao sincronizar atendimento ${atendimento.id}`,
+          error,
+        );
+
       }
-    } catch (error) {
-      this.logger.error(
-        `Erro ao sincronizar atendimento ${atendimento.id}`,
-        error,
-      );
     }
+
+    this.logger.log('Sincronização finalizada');
   }
-
-  this.logger.log('Sincronização finalizada');
-}
-
-
 }

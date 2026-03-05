@@ -24,6 +24,7 @@ import { EmailModule } from './email/email.module';
 import {ConfigModule} from '@nestjs/config';
 import { TermoModule } from './termo/termo.module';
 import { AvisoModule } from './aviso/aviso.module';
+import { HuggyModule } from './integracoes/huggy/huggy.module';
 
 @Module({
   imports: [
@@ -45,7 +46,7 @@ import { AvisoModule } from './aviso/aviso.module';
     EmailModule, 
      ConfigModule.forRoot({
       isGlobal: true,
-    }), TermoModule, AvisoModule,
+    }), TermoModule, AvisoModule, HuggyModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],
