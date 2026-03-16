@@ -1,7 +1,7 @@
 import { IsBoolean, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
+  @IsString()
   email: string;
 
   @IsString()
@@ -16,5 +16,5 @@ export class CreateUserDto {
   active: Boolean;
 
   @IsString()
-  role: 'ADMIN' | 'USER';
+  role: 'ADMIN' | 'USER' | 'CONDOMINIO';
 }
