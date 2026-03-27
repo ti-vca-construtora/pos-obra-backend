@@ -495,9 +495,9 @@ async cancelarVisita(idVisita: string) {
 
     // 3. validar regra
 
-  if (diferencaHoras <= 24) {
+  if (diferencaHoras <= 48) {
     throw new BadRequestException(
-      'A visita não pode ser cancelada com menos de 24 horas de antecedência'
+      'A visita não pode ser cancelada com menos de 48 horas de antecedência'
     );
   }
 

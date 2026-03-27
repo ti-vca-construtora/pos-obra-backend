@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { MobussService } from '../integracoes/mobuss/mobuss.service';
@@ -15,6 +15,50 @@ export class TasksService {
     private readonly emailService: EmailService,
     private readonly huggyService: HuggyService,
   ) {}
+
+  private async enviarFlowWhatsapp(
+    telefone: string,
+    nomeContato: string,
+    variables: Record<string, unknown>,
+  ): Promise<void> {
+    const phone = telefone.replace(/\D/g, '');
+
+    if (!phone) {
+      throw new BadRequestException('Telefone inválido');
+    }
+
+    let contato = await this.huggyService.buscarContatoPorTelefone(phone);
+
+    if (!contato) {
+      contato = await this.huggyService.criarContato(
+        nomeContato || 'Cliente',
+        phone,
+      );
+    }
+
+    await this.huggyService.executarFlow(contato.id, variables);
+  }
+
+  async enviarMensagemWhatsappTeste(
+    telefone: string,
+    mensagem: string,
+  ): Promise<{ message: string; telefone: string }> {
+    if (!mensagem?.trim()) {
+      throw new BadRequestException('Mensagem é obrigatória');
+    }
+
+    const variables = {
+      mensagem: mensagem.trim(),
+      nomecliente: 'Cliente',
+    };
+
+    await this.enviarFlowWhatsapp(telefone, 'Cliente', variables);
+
+    return {
+      message: 'Mensagem de teste enviada para a fila de envio do WhatsApp',
+      telefone: telefone.replace(/\D/g, ''),
+    };
+  }
 
   @Cron('0 9,18 * * *', {
     timeZone: 'America/Sao_Paulo',
@@ -106,23 +150,9 @@ export class TasksService {
                 continue;
               }
 
-              const phone = telefone.replace(/\D/g, '');
-
-              let contato =
-                await this.huggyService.buscarContatoPorTelefone(
-                  phone,
-                );
-
-              if (!contato) {
-
-               contato = await this.huggyService.criarContato(
-  atendimento.nomeSolicitante ?? 'Cliente',
-  phone,
-);
-              }
-
-              await this.huggyService.executarFlow(
-                contato.id,
+              await this.enviarFlowWhatsapp(
+                telefone,
+                atendimento.nomeSolicitante ?? 'Cliente',
                 {
                   nomecliente: atendimento.nomeSolicitante,
                   datavisita: data.toLocaleDateString('pt-BR'),
