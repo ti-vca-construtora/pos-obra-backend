@@ -429,15 +429,17 @@ async loginByCpf(cpf: string, birthDate: string) {
 async checkCpfAndCreate(cpf: string) {
  const cleanCpf = cpf.replace(/\D/g, '');
 
- let user = await this.prisma.usuario.findUnique({
+ let user = await this.prisma.usuario.findFirst({
    where: {
-     email: cleanCpf
+     cpf: cleanCpf
    }
  });
 
  if (user) {
+   const usedCpfAsCredentials = user.email === cleanCpf;
    return {
-     exists: true
+     exists: true,
+     usedCpfAsCredentials
    };
  }
 
@@ -458,12 +460,14 @@ async checkCpfAndCreate(cpf: string) {
  if (!result)
    throw new UnauthorizedException();
 
- let birthDate = result.birthDate;
+ let birthDate = result.birthDate as string | null;
 
- if (birthDate.includes('T'))
+ if (birthDate && birthDate.includes('T'))
    birthDate = birthDate.split('T')[0];
 
- const hashedPassword = await bcrypt.hash(birthDate, 10);
+ const usedCpfAsCredentials = !birthDate;
+ const passwordToHash = birthDate ?? cleanCpf;
+ const hashedPassword = await bcrypt.hash(passwordToHash, 10);
 
  user = await this.prisma.usuario.create({
    data: {
@@ -471,7 +475,7 @@ async checkCpfAndCreate(cpf: string) {
      password: hashedPassword,
      nome: result.name,
      cpf: cleanCpf,
-     birthDate,
+     birthDate: birthDate ?? null,
      role: 'USER',
      active: true
    }
@@ -479,7 +483,8 @@ async checkCpfAndCreate(cpf: string) {
 
 
  return {
-   exists: false
+   exists: false,
+   usedCpfAsCredentials
  };
 }
 

@@ -10,7 +10,6 @@ import { TermoService } from './termo.service';
 @Controller('site/termo')
 export class TermoController {
 
-
   constructor(
     private readonly service: TermoService
   ) {}
