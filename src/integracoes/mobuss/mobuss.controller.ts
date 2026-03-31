@@ -50,8 +50,7 @@ agendar(
   return this.service.agendarVisita(id, dto);
 }
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('PUBLIC')
+@Public()
 @Post('solicitacoes-cliente')
 consultarSolicitacoesCliente(
   @Body() dto: ConsultarSolicitacoesClienteDto,

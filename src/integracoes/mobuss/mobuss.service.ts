@@ -383,7 +383,47 @@ async consultarSolicitacoesCliente(dto: ConsultarSolicitacoesClienteDto) {
       ),
     );
 
-    return response.data;
+    const solicitacoes = response.data?.solicitacaoAtendimento;
+
+    if (!Array.isArray(solicitacoes) || solicitacoes.length === 0) {
+      return response.data;
+    }
+
+    const idsMobuss = solicitacoes
+      .map((solicitacao: { id?: string }) => solicitacao.id)
+      .filter((id): id is string => Boolean(id));
+
+    if (idsMobuss.length === 0) {
+      return response.data;
+    }
+
+    const atendimentos = await this.prisma.atendimentoMobuss.findMany({
+      where: {
+        idMobuss: {
+          in: idsMobuss,
+        },
+      },
+      select: {
+        id: true,
+        idMobuss: true,
+      },
+    });
+
+    const atendimentoIdPorIdMobuss = new Map(
+      atendimentos.map((atendimento) => [atendimento.idMobuss, atendimento.id]),
+    );
+
+    return {
+      ...response.data,
+      solicitacaoAtendimento: solicitacoes.map(
+        (solicitacao: Record<string, unknown> & { id?: string }) => ({
+          ...solicitacao,
+          atendimentoId: solicitacao.id
+            ? atendimentoIdPorIdMobuss.get(solicitacao.id) ?? null
+            : null,
+        }),
+      ),
+    };
   } catch (error: any) {
     console.error('ERRO MOBUSS CONSULTAR SOLICITAÇÕES >>>', {
       payload: dto,
