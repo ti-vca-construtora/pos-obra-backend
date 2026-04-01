@@ -324,8 +324,18 @@ async consultarSituacaoAtendimento(idSolicitacaoAtendimento: string) {
       data: error?.response?.data,
     });
 
+    const status = error?.response?.status;
+    const data = error?.response?.data;
+
+    if (status === 404 && data?.codigoInterno === 'SAT-AT002') {
+      throw new NotFoundException(
+        data ||
+          `Solicitação Mobuss não localizada para id (${idSolicitacaoAtendimento})`,
+      );
+    }
+
     throw new InternalServerErrorException(
-      error?.response?.data || 'Erro ao consultar situação do atendimento',
+      data || 'Erro ao consultar situação do atendimento',
     );
   }
 }

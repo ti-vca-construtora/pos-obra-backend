@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { MobussService } from '../integracoes/mobuss/mobuss.service';
@@ -70,7 +75,7 @@ export class TasksService {
     const atendimentos = await this.prisma.atendimentoMobuss.findMany({
       where: {
         status: {
-          notIn: ['CONCLUIDO', 'CANCELADO'],
+          notIn: ['CONCLUIDO', 'CANCELADO', 'ERRO'],
         },
       },
     });
@@ -181,6 +186,21 @@ export class TasksService {
         }
 
       } catch (error) {
+        if (error instanceof NotFoundException) {
+          await this.prisma.atendimentoMobuss.update({
+            where: { id: atendimento.id },
+            data: {
+              status: 'CANCELADO',
+              payloadResposta: (error as NotFoundException).getResponse(),
+            },
+          });
+
+          this.logger.warn(
+            `Atendimento ${atendimento.id} não localizado na Mobuss; marcado como CANCELADO`,
+          );
+
+          continue;
+        }
 
         this.logger.error(
           `Erro ao sincronizar atendimento ${atendimento.id}`,
