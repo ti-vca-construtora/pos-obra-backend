@@ -92,7 +92,20 @@ async remove(id: number) {
     }
   }
 
-  return this.prisma.usuario.delete({ where: { id } });
+  const [, deletedUser] = await this.prisma.$transaction([
+    this.prisma.passwordReset.deleteMany({
+      where: { userId: id },
+    }),
+    this.prisma.usuario.delete({ where: { id } }),
+  ]);
+
+  return {
+    id: deletedUser.id,
+    email: deletedUser.email,
+    nome: deletedUser.nome,
+    role: deletedUser.role,
+    active: deletedUser.active,
+  };
 }
 
 
