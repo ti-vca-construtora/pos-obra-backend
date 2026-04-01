@@ -436,7 +436,7 @@ async checkCpfAndCreate(cpf: string) {
  });
 
  if (user) {
-   const usedCpfAsCredentials = user.email === cleanCpf;
+   const usedCpfAsCredentials = !user.birthDate;
    return {
      exists: true,
      usedCpfAsCredentials
