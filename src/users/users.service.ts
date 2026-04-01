@@ -54,6 +54,14 @@ export class UsersService {
 
 
 async update(id: number, dto: UpdateUserDto) {
+  const existingUser = await this.prisma.usuario.findUnique({
+    where: { id },
+  });
+
+  if (!existingUser) {
+    throw new NotFoundException('Usuário não encontrado');
+  }
+
   const data: any = { ...dto };
 
   if (dto.password) {

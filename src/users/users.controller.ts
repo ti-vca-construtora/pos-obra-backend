@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -33,15 +43,15 @@ getProfile(){
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN', 'USER')
 @Patch(':id')
-update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-  return this.usersService.update(+id, dto);
+update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
+  return this.usersService.update(id, dto);
 }
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 @Delete(':id')
-remove(@Param('id') id: string) {
-  return this.usersService.remove(+id);
+remove(@Param('id', ParseIntPipe) id: number) {
+  return this.usersService.remove(id);
 }
 
 }
